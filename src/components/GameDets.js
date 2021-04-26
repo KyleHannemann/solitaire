@@ -1,6 +1,8 @@
-import React, {Componenet, Component} from 'react';
+
+import React, {Component} from 'react';
 
 export default class GameDets extends Component{
+    
 
     render(){
         let {time} = this.props;
@@ -32,8 +34,11 @@ export default class GameDets extends Component{
         let displayTime = getTime(time);
         return(
             <div id="gameDets">
+                <button id="undo"onClick={this.props.undo}>Undo</button>
                 <div id="moves">Moves: {this.props.moves}</div>
                 <div id="time">Time: {displayTime}</div>
+                
+                
             </div>
         )
     }

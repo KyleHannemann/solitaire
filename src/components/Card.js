@@ -54,7 +54,7 @@ export default class Card extends Component{
     onDragOver(e){e.preventDefault()}
     
     checkValidDrop(pos, dropId, droppedOnId){
-        if (pos != "foundation"){
+        if (pos !== "foundation"){
             let newValue = {"A": 1, "0": 10, "J": 11, "Q": 12, "K": 13}
             let check = ["A","K","Q","J", "0"]
             let droppedOnValue = droppedOnId[droppedOnId.length - 2];

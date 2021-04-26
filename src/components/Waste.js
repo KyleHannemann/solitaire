@@ -1,4 +1,4 @@
-import React, {Componenet, Component} from 'react';
+import React, {Component} from 'react';
 
 export default class Waste extends Component{
     constructor(props){

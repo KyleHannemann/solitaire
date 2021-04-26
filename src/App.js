@@ -1,4 +1,3 @@
-import logo from './logo.svg';
 import './App.css';
 import React, {Component} from 'react';
 import TableauColumn from './components/TableauColumn';
@@ -7,6 +6,7 @@ import Foundation from './components/Foundation';
 import GameDets from './components/GameDets';
 import Stock from './components/Stock';
 import Waste from './components/Waste';
+import Login from './components/Login';
 
 const reqSvgs = require.context('./cards', true, /\.svg$/)
 const paths = reqSvgs.keys();
@@ -47,7 +47,8 @@ class App extends Component {
       moves: 0,
       time: 0,//TODO
       history: [],
-      username: '',//TODO
+      username: '',
+      loggedIn: false,//TODO
 
     }
    this.update = this.update.bind(this);
@@ -76,6 +77,9 @@ class App extends Component {
     this.setState({waste: []});
   }
   undo(){
+    if (this.state.history.length < 2){
+      return;
+    }
     this.setState({moves: this.state.moves + 1})
     let {stock, tableau1, tableau2, tableau3, tableau4, tableau5, tableau6, tableau7,
     waste, foundationClubs, foundationDiamonds, foundationHearts, foundationSpades} = this.state.history[this.state.history.length - 1];
@@ -83,10 +87,11 @@ class App extends Component {
     this.setState({stock: stock, tableau1: tableau1, tableau2: tableau2, tableau3: tableau3, 
       tableau4: tableau4, tableau5: tableau5, tableau6: tableau6, tableau7: tableau7,
       waste: waste, foundationClubs: foundationClubs, foundationDiamonds: foundationDiamonds, 
-      foundationHearts: foundationHearts, foundationSpades: foundationSpades});
+      foundationHearts: foundationHearts, foundationSpades: foundationSpades}, ()=>console.log(this.state.history));
       this.setState({history: this.state.history.filter((el, index, arr)=>
-      {if(index < arr.length -1){return el}})})
-    console.log(this.state.history)
+      {if(index < arr.length -1){return el}else{return false;}}
+      )})
+   
   }
   shuffle(){
     let array = this.state.cards;
@@ -133,13 +138,13 @@ class App extends Component {
 
   }
   update(cardId, oldPosition, newPosition, children){
-    this.setState({moves: this.state.moves + 1}, ()=>console.log(this.state.moves))
+    this.setState({moves: this.state.moves + 1})
     let newMove = [this.state];
-    this.setState({history: this.state.history.concat(newMove)});
+    this.setState({history: this.state.history.concat(newMove)}, ()=>console.log(this.state.history));
 
   if (children === false){
     
-   this.setState({[oldPosition]: this.state[oldPosition].filter(card=>card.id != cardId)});
+   this.setState({[oldPosition]: this.state[oldPosition].filter(card=>card.id !== parseInt(cardId))});
    this.setState({[newPosition]: this.state[newPosition].concat([this.state.cards[cardId]])
     .map(card=>{card.position = newPosition; return card;})})
   } 
@@ -148,7 +153,7 @@ class App extends Component {
     let startIndex;
     for (let i = 0; i < findIndex.length; i++){if (findIndex[i].id === parseInt(cardId)){startIndex = i}}
     this.setState({[oldPosition]: this.state[oldPosition].filter((card, index)=>
-    {if (index < startIndex){return card;}})});
+    {if (index < startIndex){return card;}else{return false;}})});
     let arr = this.state[oldPosition].slice(startIndex);
     this.setState({[newPosition]: this.state[newPosition].concat(arr)
       .map(card=>{card.position = newPosition; return card;})});
@@ -156,11 +161,15 @@ class App extends Component {
   }
   
   render() {
-    
+    let loggedIn;
+    if (this.state.loggedIn === false){
+      loggedIn = (<Login loggedIn={()=>{this.setState({loggedIn: true})}}/>)
+    }
+    else{loggedIn = (<div></div>)}
     return(
       <div>
-        <button onClick={this.undo}>UNDO</button>
-      <GameDets moves={this.state.moves} time={this.state.time}/>
+      {loggedIn}
+      <GameDets moves={this.state.moves} time={this.state.time} undo={this.undo}/>
       <div id="container1">
       <Stock cards={this.state.stock}  update={this.update} resetStock={this.resetStock}/>
       <Waste cards={this.state.waste} update={this.update} flipCard={this.flipCard}/>
