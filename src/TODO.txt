@@ -1,0 +1,23 @@
+
+
+- improve css,
+make default image for foundations
+
+
+- track moves
+
+-  user signup (post)
+
+- .user update info (put)
+
+- .delete user (delete)
+
+-  user signin (get)
+
+- wingame function- Improve checkValidDrop function if noticing bugs
+    not working 100%
+
+- UNDO
+ Why is history not storing card data correctly?
+
+

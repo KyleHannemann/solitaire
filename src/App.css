@@ -1,13 +1,80 @@
-.card{
-  height: 100px;
-  width: 70px;
-  background-size: contain;
-  float: left;
-  margin-top: 20px;
+.tableauColumn *{
+  height: 110px;
+  width: 95px;
+  background-size:cover;
+  padding-top: 25px;
+ border-radius: 7%;
+ 
+  
   
 }
-#pract{
-  height: 400px;
-  width: 400px;
-  background-color: black
+body{
+  background-image: url('./cardTable.png');
+  background-size:cover;
+
 }
+#stock *, #waste *{
+ display: none;
+ 
+  
+  
+}
+
+#stock :last-child, #waste :last-child, .foundation  :last-child{
+  padding-top: 25px;
+  height: 110px;
+  width: 95px;
+  background-size:cover;
+ border-radius: 7%;
+ display: inline-block;
+}
+
+
+#container1{
+  display: flex;
+  justify-content: center;
+ 
+  height: 150px;
+  width: 100%;
+
+}
+#stock{
+  width: 150px;
+  height: 250px;
+  margin-left: 1vw;
+  background-color: cornflowerblue;
+}
+#waste{
+  width: 150px;
+  height: 250px;
+  background-color: rgb(34, 214, 64);
+ 
+}
+.foundation{
+  width: 100px;
+  height: 250px;
+  background-color: crimson;
+}
+#gameDets{
+  width: 100%;
+  background-color: black;
+  height: 12vh;
+}
+#tableau{
+  width: 100%;
+  height: 400px;
+  display: flex;
+  flex-direction: row;
+}
+.tableauColumn{
+  height: 400px;
+  width: 150px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+
+
+
+
