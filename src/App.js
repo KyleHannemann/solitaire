@@ -44,7 +44,8 @@ class App extends Component {
       foundationHearts: [],
       foundationSpades: [],
       foundationClubs: [],
-      moves: 0,//TODO
+      moves: 0,
+      time: 0,//TODO
       history: [],
       username: '',//TODO
 
@@ -53,18 +54,29 @@ class App extends Component {
    this.flipCard = this.flipCard.bind(this);
    this.undo = this.undo.bind(this)
    this.resetStock = this.resetStock.bind(this)
+   this.startTime = this.startTime.bind(this)
+   this.startGame = this.startGame.bind(this)
+  }
+  startGame(){//TODO
+    let timer = setInterval(this.startTime, 1000)
+  }
+  startTime(){
+    this.setState({time: this.state.time + 1}, ()=>console.log(this.state.time))
   }
   componentDidMount(){
     this.shuffle();
+  
+
   }
   resetStock(){
+    this.setState({moves: this.state.moves + 1})
     this.setState({stock: this.state.waste.reverse().map(
       card=>{card.faceUp = false; return card;}
     )});
     this.setState({waste: []});
   }
   undo(){
-
+    this.setState({moves: this.state.moves + 1})
     let {stock, tableau1, tableau2, tableau3, tableau4, tableau5, tableau6, tableau7,
     waste, foundationClubs, foundationDiamonds, foundationHearts, foundationSpades} = this.state.history[this.state.history.length - 1];
     
@@ -121,6 +133,7 @@ class App extends Component {
 
   }
   update(cardId, oldPosition, newPosition, children){
+    this.setState({moves: this.state.moves + 1}, ()=>console.log(this.state.moves))
     let newMove = [this.state];
     this.setState({history: this.state.history.concat(newMove)});
 
@@ -147,7 +160,7 @@ class App extends Component {
     return(
       <div>
         <button onClick={this.undo}>UNDO</button>
-      <GameDets/>
+      <GameDets moves={this.state.moves} time={this.state.time}/>
       <div id="container1">
       <Stock cards={this.state.stock}  update={this.update} resetStock={this.resetStock}/>
       <Waste cards={this.state.waste} update={this.update} flipCard={this.flipCard}/>

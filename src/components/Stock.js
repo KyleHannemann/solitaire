@@ -8,11 +8,7 @@ export default class Stock extends Component{
         this.flipCard = this.flipCard.bind(this)
     }
     flipCard(e){
-        if (e.target.id === "stock"){
-            let checkEmpty = e.target.firstChild;
-            if (checkEmpty){
-                return;
-            }
+        if (e.target.id === "reset"){
             this.props.resetStock();
             return;
         }
@@ -31,7 +27,9 @@ export default class Stock extends Component{
             )})
         
         return(
-            <div onClick={this.flipCard} id="stock">{stock}</div>
+            <div id="stock">
+                <div id="reset" onClick={this.flipCard}>Reset</div>
+                {stock}</div>
         )
     }
 }

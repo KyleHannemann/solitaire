@@ -11,25 +11,31 @@ export default class Foundation extends Component{
     checkValidDrop(pos, value, droppedOnId){
             if (droppedOnId === "foundationClubs"){
                 if (value === "AC"){
+                    document.getElementById("foundationClubs").style.opacity = 1;
+
                     return true;
                 }
                 else return false;
             }
             if (droppedOnId === "foundationDiamonds"){
                 if (value === "AD"){
+                    document.getElementById("foundationDiamonds").style.opacity = 1;
+
                     return true;
                 }
                 else return false;
             }
             if (droppedOnId === "foundationHearts"){
                 if (value === "AH"){
+                    document.getElementById("foundationHearts").style.opacity = 1;
                     return true;
                 }
                 else return false;
             }
             if (droppedOnId === "foundationSpades"){
                 if (value === "AS"){
-                    return true;
+                    document.getElementById("foundationSpades").style.opacity = 1;
+                     return true;
                 }
                 else return false;
             }
@@ -57,19 +63,21 @@ export default class Foundation extends Component{
             }
             if (dropSuit === "D"){
                 if ((droppedOnSuit === "D") && (dropValue - droppedOnValue === 1)){
+
                         return true;
                 }
                 else{return false;} 
             }
             if (dropSuit === "H"){
                 if ((droppedOnSuit === "H") && (dropValue - droppedOnValue === 1)){
-                        return true;
+                   
+                    return true;
                 }
                 else{return false;} 
             }
             if (dropSuit === "S"){
                 if ((droppedOnSuit === "S") && (dropValue - droppedOnValue === 1)){
-                        return true;
+                    return true;
                 }
                 else{return false;} 
             }

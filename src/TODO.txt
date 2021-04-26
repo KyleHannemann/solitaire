@@ -2,9 +2,10 @@
 
 - improve css,
 make default image for foundations
+**(partly done)
 
 
-- track moves
+
 
 -  user signup (post)
 
