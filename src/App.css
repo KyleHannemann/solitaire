@@ -8,6 +8,7 @@
   
   
 }
+
 #time{
   font-size: 24px;
   color: white
@@ -65,12 +66,109 @@ body{
   flex-direction: column;
   justify-content:space-evenly;
 }
-#register > form, #login > form{
+#welcome{
+  border-radius: 5px;
+  background-color: #f2f2f2;
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  justify-content:space-evenly;
+  
+}
+#stats > li{
+  margin-top: 25px;
+  margin-left: 5px;
+  text-align: left;
+  font-size: 20px;
+ 
+  border-bottom: 2px solid lightgray;
+}
+#stats > button {
+  float: right;
+  color: red;
+  border-radius: 4px;
+}
+#stats > button:hover{
+  background-color:  #d3cece;
+}
+#stats{
+  margin-bottom: 2000px;
+  display: none;
+  
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: flex-start;
+  height: 350px;
+  z-index: 2;
+  border-radius: 5px;
+  background-color: #f2f2f2;
+  padding: 20px;
+ 
+  
+}
+#editClose{
+  margin-left: 90%;
+  margin-bottom: 10px;
+  color: red;
+
+}
+#edit{
+  
+  transition: 1s;
+  margin-bottom: 2000px;
+  display: none;
+  position: absolute;
+  z-index: 5;
+}
+
+#welcomeContainer{
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+#welcome > h3{
+  font-size: 28px;
+  text-shadow: 0 1px 0 #ccc,
+  0 1px 0 #c9c9c9,
+  0 2px 0 #bbb,
+  0 3px 0 #b9b9b9,
+  0 3px 0 #aaa,
+  0 3px 1px rgba(0,0,0,.1),
+  0 0 2px rgba(0,0,0,.1),
+  0 1px 2px rgba(0,0,0,.3),
+  0 3px 2px rgba(0,0,0,.2),
+  0 5px 8px rgba(0,0,0,.25),
+  0 10px 8px rgba(0,0,0,.2),
+  0 10px 10px rgba(0,0,0,.15);
+}
+#welcome > div{
+  width: 100%;
+  padding: 12px 20px;
+  margin: 8px 0;
+  display: inline-block;
+  border: 1px solid #ccc;
+  background-color:  rgb(123, 168, 123);
+  border-radius: 4px;
+  box-sizing: border-box;
+  text-align: center;
+}
+#welcome > div:hover{
+
+  cursor: pointer;
+  background-color: rgb(82, 131, 82)
+
+}
+#register > form, #login > form, #edit > form{
   border-radius: 5px;
   background-color: #f2f2f2;
   padding: 20px;
 }
-#register > form > div > input, #login > form > div > input{
+#register > form > div > input, #login > form > div > input, #edit > form > div > input{
   width: 100%;
   padding: 12px 20px;
   margin: 8px 0;
@@ -80,7 +178,7 @@ body{
   box-sizing: border-box;
 
 }
-#register > form > div > button, #login > form > div > button{
+#register > form > div > button, #login > form > div > button, #edit > form > div > button{
   width: 100%;
   padding: 12px 20px;
   margin: 8px 0;
@@ -92,7 +190,7 @@ body{
   color: white;
 }
 
-#register > form > div > button:hover, #login > form > div > button:hover{
+#register > form > div > button:hover, #login > form > div > button:hover,  #edit > form > div > button:hover{
   cursor: pointer;
   background-color: rgb(82, 131, 82);
 }
@@ -133,12 +231,11 @@ body{
 }
 
 @media screen and (max-width: 1200px){
-  #gameDets { height: 100px;
-    margin-bottom: 10px;
+  /*put dropdown menu here*/
   
   
   }
-}
+
 #container1{
   display: flex;
   justify-content: flex-start;
@@ -211,19 +308,27 @@ body{
   align-items: center;
 }
 #undo{
-  width: 100px;
-  height: 50px;
-  border-radius: 50%;
-  font-size: 16px;
-  background-color: rgb(65, 123, 180);
-  margin-right: 200px;
-  margin-left: 200px;
+  color: #FFF;
+  border: 2px solid #f2f2f2;
+  border-radius: 0px;
+  padding: 8px;
+  margin-right: 400px;
+  margin-left: 75px;
+  width: 80px;
+  height: 35px;
+  display: inline-block;
+  background-color: inherit;
+  font-size: 14px;
+  letter-spacing: 1px;
   cursor: pointer;
-  transition: .25s;
- 
+  box-shadow: inset 0 0 0 0 #f2f2f2;
+  -webkit-transition: ease-out 0.4s;
+  -moz-transition: ease-out 0.4s;
+  transition: ease-out 0.4s;
 }
 #undo:hover{
-  background-color: lightsteelblue;
+  box-shadow: inset 400px 0 0 0 #f2f2f2;
+  color: black
 }
 
 

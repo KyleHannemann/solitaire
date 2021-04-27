@@ -1,24 +1,27 @@
 
 
-- improve css,
-make default image for foundations
-**(partly done)
 
 
 
 
--  user signup (post)
 
-- .user update info (put)
 
-- .delete user (delete)
 
--  user signin (get)
 
-- wingame function- Improve checkValidDrop function if noticing bugs
+
+
+
+start over
+
+- wingame function
+
+- Improve checkValidDrop function if noticing bugs
     not working 100%
 
-- UNDO
- Why is history not storing card data correctly?
+- put info into user on completed game, restart etc..
+(won game, time, moves, etc)
+
+
+-implement click function to move cards to foundation
 
 

@@ -1,5 +1,4 @@
 import React, {Component} from 'react'
-
 //props: cards, backofcard, 
 //methods: flipcard, dragcard, dropcard, ondragover, checkvaliddrop
 //state: ?faceup?
@@ -24,7 +23,9 @@ export default class Card extends Component{
     }
     
     onDrop(e){
+        e.dataTransfer.dropEffect = "copy";
         e.stopPropagation();
+       
        let {id, value, position, children} =  JSON.parse(e.dataTransfer.getData('data'));
        let cardUnderValue = e.target.dataset.value;
        if (position === e.target.dataset.position){
@@ -42,6 +43,8 @@ export default class Card extends Component{
     }
     
     onDragStart(e){
+        e.dataTransfer.effectAllowed = "copyMove";
+
         let children = false;
         if (e.target.firstChild){
             children = true;

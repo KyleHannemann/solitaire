@@ -58,17 +58,15 @@ class App extends Component {
    this.startTime = this.startTime.bind(this)
    this.startGame = this.startGame.bind(this)
   }
-  startGame(){//TODO
+  startGame(){
+    this.setState({loggedIn: true})
+    this.shuffle();
     let timer = setInterval(this.startTime, 1000)
   }
   startTime(){
-    this.setState({time: this.state.time + 1}, ()=>console.log(this.state.time))
+    this.setState({time: this.state.time + 1})
   }
-  componentDidMount(){
-    this.shuffle();
   
-
-  }
   resetStock(){
     this.setState({moves: this.state.moves + 1})
     this.setState({stock: this.state.waste.reverse().map(
@@ -81,16 +79,27 @@ class App extends Component {
       return;
     }
     this.setState({moves: this.state.moves + 1})
+    //check to see if only a card flip
+    if (!this.state.history[this.state.history.length - 1].cards){
+      let {position, id}  = this.state.history[this.state.history.length - 1];
+      this.setState({[position]: this.state[position].map(el=>{if(el.id === parseInt(id)){el.faceUp = false; el.image = el.back}return el;}),
+      history: this.state.history.filter((el, index, arr)=>
+      {if(index < arr.length -1){return el}else{return false;}}
+      )});
+      
+      return;
+    }
     let {stock, tableau1, tableau2, tableau3, tableau4, tableau5, tableau6, tableau7,
     waste, foundationClubs, foundationDiamonds, foundationHearts, foundationSpades} = this.state.history[this.state.history.length - 1];
     
-    this.setState({stock: stock, tableau1: tableau1, tableau2: tableau2, tableau3: tableau3, 
-      tableau4: tableau4, tableau5: tableau5, tableau6: tableau6, tableau7: tableau7,
-      waste: waste, foundationClubs: foundationClubs, foundationDiamonds: foundationDiamonds, 
-      foundationHearts: foundationHearts, foundationSpades: foundationSpades}, ()=>console.log(this.state.history));
+    this.setState({stock: stock.map(el=>{el.position = "stock"; el.faceUp = false; return el}), tableau1: tableau1.map(el=>{el.position = "tableau1"; return el}), tableau2: tableau2.map(el=>{el.position = "tableau2"; return el}), 
+    tableau3: tableau3.map(el=>{el.position = "tableau3"; return el}), tableau4: tableau4.map(el=>{el.position = "tableau4"; return el}), tableau5: tableau5.map(el=>{el.position = "tableau5"; return el}), tableau6: tableau6.map(el=>{el.position = "tableau6"; return el}), tableau7: tableau7.map(el=>{el.position = "tableau7"; return el}),
+      waste: waste.map(el=>{el.position = "waste"; return el}), foundationClubs: foundationClubs.map(el=>{el.position = "foundationClubs"; return el}), foundationDiamonds: foundationDiamonds.map(el=>{el.position = "foundationDiamonds"; return el}), 
+      foundationHearts: foundationHearts.map(el=>{el.position = "foundationHearts"; return el}), foundationSpades: foundationSpades.map(el=>{el.position = "foundationSpades"; return el})}, ()=>console.log(this.state));
       this.setState({history: this.state.history.filter((el, index, arr)=>
       {if(index < arr.length -1){return el}else{return false;}}
-      )})
+      )});
+    
    
   }
   shuffle(){
@@ -128,6 +137,9 @@ class App extends Component {
 
   }
   flipCard(id, position){
+    this.setState({history: this.state.history.concat([{id: id, position : position}])})
+    //push the card index to the history arr, then When going throught the history
+    //if come across simgle card, I know all i need to do is reverse that card..)
     this.setState({[position]: this.state[position].map(card=>{
       if (card.id === parseInt(id)){
         card.image = card.cardImage;
@@ -163,12 +175,10 @@ class App extends Component {
   render() {
     let loggedIn;
     if (this.state.loggedIn === false){
-      loggedIn = (<Login loggedIn={()=>{this.setState({loggedIn: true})}}/>)
+      loggedIn = (<Login startGame={this.startGame}/>)
     }
-    else{loggedIn = (<div></div>)}
-    return(
-      <div>
-      {loggedIn}
+    else{loggedIn = (  <div>
+      
       <GameDets moves={this.state.moves} time={this.state.time} undo={this.undo}/>
       <div id="container1">
       <Stock cards={this.state.stock}  update={this.update} resetStock={this.resetStock}/>
@@ -188,6 +198,10 @@ class App extends Component {
         <TableauColumn id="tableau6"cards={this.state.tableau6} update={this.update} flipCard={this.flipCard}/>
         <TableauColumn id="tableau7"cards={this.state.tableau7} update={this.update} flipCard={this.flipCard}/>
       </div>
+      </div>)}
+    return(
+      <div>
+      {loggedIn}
       </div>
     )
   }
