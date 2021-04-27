@@ -11,6 +11,7 @@ export default class TableauColumn extends Component{
         this.onDragOver = this.onDragOver.bind(this);
     }
     onDrop(e){
+        e.dataTransfer.dropEffect = "copy";
         let parent;
         if (e.target.dataset.id === "columnRoot"){parent = e.target;}
         else {parent = e.target.firstChild}
@@ -28,10 +29,10 @@ export default class TableauColumn extends Component{
         e.preventDefault()
     }
     render(){
-        let {cards, update, flipCard} = this.props;
+        let {cards, update, flipCard, foundationTopCard} = this.props;
         return(
             <div onDragOver={this.onDragOver} onDrop={this.onDrop} id={this.props.id} className="tableauColumn">
-             <Card update={update} cards={cards} flipCard={flipCard}/>
+             <Card foundationTopCard={foundationTopCard} update={update} cards={cards} flipCard={flipCard}/>
             </div>
            
         )

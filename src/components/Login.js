@@ -76,7 +76,7 @@ export default class Login extends Component{
         axios.post('/api/profiles/login', creds)
         .then(response=>{
             if (response.data.length === 1){this.welcome(response)}else{alert('invalid username and/or password')}
-        }).catch(error=>{console.log(error)})
+        }).catch(error=>{console.log(error); alert("error")})
         
     }
     welcome(response){

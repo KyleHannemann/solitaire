@@ -90,6 +90,7 @@ export default class Foundation extends Component{
         e.dataTransfer.setData('data', JSON.stringify(data));
         }
         onDrop(e){
+            e.dataTransfer.dropEffect = "copy";
             e.stopPropagation();
            let {id, value, position, children} =  JSON.parse(e.dataTransfer.getData('data'));
            let cardUnderValue = e.target.dataset.value;

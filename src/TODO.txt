@@ -6,12 +6,23 @@
 
 
 
+BUGS:
+
+-undo for flipping cards is not working corectly:
+    I think cards from either waste or stock are causing problem    
+
+-doubleClick for tableau needs to only work for topcard
+
+-moving card from foundation to tableau turns it around;
 
 
+-start over
+
+-rules section in home
 
 
-
-start over
+-dropdown menu in game
+    display; (rules, go to home, newgame, (pausegame?))
 
 - wingame function
 
@@ -22,6 +33,5 @@ start over
 (won game, time, moves, etc)
 
 
--implement click function to move cards to foundation
 
 

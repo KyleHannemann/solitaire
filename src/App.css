@@ -1,12 +1,28 @@
+.rainingCard{
+  height: 110px;
+  width: 95px;
+  position: absolute;
+  background-size:cover;
+  padding-top: 25px;
+ border-radius: 7%;
+  top: 1;
+  border: 1px solid black;
+}
+
 .tableauColumn *{
   height: 110px;
   width: 95px;
   background-size:cover;
   padding-top: 25px;
  border-radius: 7%;
+
+
  
   
   
+}
+.card{
+  border: 1px solid black;
 }
 
 #time{
@@ -225,6 +241,7 @@ body{
  border-radius: 7%;
  box-shadow: 2px 5px 5px;
  display: inline-block;
+ border: 1px solid black;
 }
 #stock :last-child:hover, #waste :last-child:hover, .foundation  :last-child:hover{
  cursor: pointer;
