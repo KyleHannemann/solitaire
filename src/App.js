@@ -6,7 +6,6 @@ import Foundation from './components/Foundation';
 import GameDets from './components/GameDets';
 import Stock from './components/Stock';
 import Waste from './components/Waste';
-import Login from './components/Login';
 
 const reqSvgs = require.context('./cards', true, /\.svg$/)
 const paths = reqSvgs.keys();
@@ -23,6 +22,7 @@ for (let i = 0; i < svg.length; i++){
   svg[i].back = backOfCard;
   svg[i].image = svg[i].back
 }
+let timer;
 
 //State: cards, stock, tableau columns 1-7, waste, foundation, moves, history, ?time, 
 //Methods: update states above, update history, updatemoves, shuffle
@@ -45,10 +45,8 @@ class App extends Component {
       foundationSpades: [],
       foundationClubs: [],
       moves: 0,
-      time: 0,//TODO
+      time: 0,
       history: [],
-      username: '',
-      loggedIn: false,
       win: false,
 
     }
@@ -59,31 +57,68 @@ class App extends Component {
    this.startTime = this.startTime.bind(this)
    this.startGame = this.startGame.bind(this)
    this.winGame = this.winGame.bind(this);
+   this.newGame = this.newGame.bind(this);
+   this.logGame = this.logGame.bind(this);
+   this.returnHome = this.returnHome.bind(this);
+  }
+  returnHome(){
+    this.logGame(false);
+    this.props.returnHome();
+  }
+  componentWillUnmount(){
+    clearInterval(timer);
+  }
+  logGame(checkWin){
+    this.props.logGame(this.state.time, this.state.moves, checkWin);
+    
+  }
+  newGame(){
+    clearInterval(timer);
+    this.logGame(false);
+    this.setState({ cards: svg.map(el=>{el.image = el.back; return el}),
+      stock: [],tableau1: [],tableau2: [],tableau3: [],tableau4: [],
+      tableau5: [],tableau6: [],tableau7: [],waste: [],
+      foundationDiamonds: [],foundationHearts: [],foundationSpades: [],
+      foundationClubs: [],moves: 0,time: 0, history: [],}, ()=>{
+        this.startGame()});
   }
   winGame(){
-   
-    let rainingCards = document.querySelectorAll('.rainingCard');
-    let rainSpeed = 8;
-    function raindown(){
-      for (let i = 0; i < rainingCards.length; i++){
-        let bottom = rainingCards[i].style.bottom;
-        let number = bottom.slice(0, bottom.length - 2);
-        let newBottom = parseInt(number) - rainSpeed;
-        rainingCards[i].style.bottom = `${newBottom}px`;
-       
-       
-      }
-      console.log("yo")
-    }
+    this.setState({win: true});
+    clearInterval(timer)
+    let cards = document.querySelectorAll('.card');
+    console.log(cards)
     
-    let rain = setInterval(raindown, 100)
-    //let stopRain = setTimeout(()=>{clearInterval(rain)}, 5000);
-  }
+   setTimeout(function(){
+      let rainingCards = document.querySelectorAll('.rainingCard');
+      console.log(rainingCards)
+      function raindown(){
+        for (let i = 0; i < rainingCards.length; i++){
+          let speed = rainingCards[i].dataset.speed;
+          let bottom = rainingCards[i].style.bottom;
+          let number = bottom.slice(0, bottom.length - 2);
+          let newBottom = parseInt(number) - speed;
+          rainingCards[i].style.bottom = `${newBottom}px`;
+          if (newBottom < window.innerHeight - window.innerHeight - 200){
+              rainingCards[i].style.bottom = `${window.innerHeight}px`;
+          }
+         
+        }
+        
+      }
+      let rain = setInterval(raindown, 100)
+      setTimeout(function(){clearInterval(rain)}, 25000)
+    }, 100)
  
+  
+  }
+  componentDidMount(){
+    this.startGame();
+  }
   startGame(){
-    this.setState({loggedIn: true})
+    console.log();
     this.shuffle();
-    let timer = setInterval(this.startTime, 1000)
+    timer = setInterval(this.startTime, 1000)
+    
   }
   startTime(){
     this.setState({time: this.state.time + 1})
@@ -108,7 +143,7 @@ class App extends Component {
       history: this.state.history.filter((el, index, arr)=>
       {if(index < arr.length -1){return el}else{return false;}}
       )});
-      
+      console.log("card flip")
       return;
     }
     let {stock, tableau1, tableau2, tableau3, tableau4, tableau5, tableau6, tableau7,
@@ -116,8 +151,9 @@ class App extends Component {
     
     this.setState({stock: stock.map(el=>{el.position = "stock"; el.faceUp = false; return el}), tableau1: tableau1.map(el=>{el.position = "tableau1"; return el}), tableau2: tableau2.map(el=>{el.position = "tableau2"; return el}), 
     tableau3: tableau3.map(el=>{el.position = "tableau3"; return el}), tableau4: tableau4.map(el=>{el.position = "tableau4"; return el}), tableau5: tableau5.map(el=>{el.position = "tableau5"; return el}), tableau6: tableau6.map(el=>{el.position = "tableau6"; return el}), tableau7: tableau7.map(el=>{el.position = "tableau7"; return el}),
-      waste: waste.map(el=>{el.position = "waste"; return el}), foundationClubs: foundationClubs.map(el=>{el.position = "foundationClubs"; return el}), foundationDiamonds: foundationDiamonds.map(el=>{el.position = "foundationDiamonds"; return el}), 
-      foundationHearts: foundationHearts.map(el=>{el.position = "foundationHearts"; return el}), foundationSpades: foundationSpades.map(el=>{el.position = "foundationSpades"; return el})});
+      waste: waste.map(el=>{el.position = "waste"  ; el.faceUp = true ; return el}), foundationClubs: foundationClubs.map(el=>{el.position = "foundationClubs" ; el.faceUp = true ; return el}), foundationDiamonds: foundationDiamonds.map(el=>{el.position = "foundationDiamonds" ; el.faceUp = true ; return el}), 
+      foundationHearts: foundationHearts.map(el=>{el.position = "foundationHearts" ; el.faceUp = true ; return el}), foundationSpades: foundationSpades.map(el=>{el.position = "foundationSpades" ; el.faceUp = true ; return el})});
+      
       this.setState({history: this.state.history.filter((el, index, arr)=>
       {if(index < arr.length -1){return el}else{return false;}}
       )});
@@ -125,6 +161,7 @@ class App extends Component {
    
   }
   shuffle(){
+    console.log("hi")
     let array = this.state.cards;
     for(let i = array.length - 1; i > 0; i--){
       const j = Math.floor(Math.random() * i)
@@ -159,7 +196,9 @@ class App extends Component {
 
   }
   flipCard(id, position){
+    if (position !== "waste"){
     this.setState({history: this.state.history.concat([{id: id, position : position}])})
+    }
     //push the card index to the history arr, then When going throught the history
     //if come across simgle card, I know all i need to do is reverse that card..)
     this.setState({[position]: this.state[position].map(card=>{
@@ -174,7 +213,7 @@ class App extends Component {
   update(cardId, oldPosition, newPosition, children){
     this.setState({moves: this.state.moves + 1})
     let newMove = [this.state];
-    this.setState({history: this.state.history.concat(newMove)});
+    this.setState({history: this.state.history.concat(newMove)}, ()=>console.log(this.state.history));
 
   if (children === false){
     
@@ -195,19 +234,18 @@ class App extends Component {
 }
   checkWin(){
     let {foundationClubs, foundationDiamonds, foundationHearts, foundationSpades} = this.state;
-    console.log(foundationClubs, foundationDiamonds, foundationHearts, foundationSpades)
     if (foundationClubs.length === 13 && foundationDiamonds.length === 13 && foundationHearts.length === 13 && foundationSpades.length === 13){
-      //this.winGame;
+      this.winGame();
       return;
     }
      else {
-      this.setState({win: true})
-      setTimeout(this.winGame, 3000);
+      return;
     }
 
   }
   
   render() {
+    
     let hearts = {position:"foundationHearts", value: "foundationHearts"};
     if (this.state.foundationHearts.length > 0){
       hearts = this.state.foundationHearts[this.state.foundationHearts.length - 1]
@@ -231,13 +269,10 @@ class App extends Component {
       clubs: clubs
     }
 
-    let loggedIn = []
+    let game = []
     let rainingCards = [];
-    if (this.state.loggedIn === false){
-      loggedIn = (<Login startGame={this.startGame}/>)
-    }
-    else if (this.state.loggedIn === true && this.state.win === false){loggedIn = (  <div>
-      <GameDets moves={this.state.moves} time={this.state.time} undo={this.undo}/>
+    if (this.state.win === false){ game = (  <div>
+      <GameDets returnHome={this.returnHome} newGame={this.newGame} moves={this.state.moves} time={this.state.time} undo={this.undo}/>
       <div id="container1">
       <Stock cards={this.state.stock}  update={this.update} resetStock={this.resetStock}/>
       <Waste foundationTopCard={foundationTopCard} update={this.update} cards={this.state.waste} update={this.update} flipCard={this.flipCard}/>
@@ -257,14 +292,14 @@ class App extends Component {
         <TableauColumn foundationTopCard={foundationTopCard} id="tableau7"cards={this.state.tableau7} update={this.update} flipCard={this.flipCard}/>
       </div>
       </div>)}
-      else if (this.state.loggedIn === true && this.state.win === true){
+      else if (this.state.win === true){
       let cards = []
-      for (let i = 0; i < 20; i++){
+      for (let i = 0; i < 2; i++){
         for (let j = 0; j < svg.length; j++){
           let card = svg[j];
           card.z = Math.floor(Math.random() * 100);
-          //get view width and view height;
-          card.bottom = Math.floor(Math.random() * window.innerHeight + 700);
+          card.speed = Math.floor(Math.random() * 8 + 4);
+          card.bottom = window.innerHeight;
           card.left = Math.floor(Math.random() * window.innerWidth - 30)
           cards.push(card);
         }
@@ -281,12 +316,12 @@ class App extends Component {
           <div key={index} data-speed={el.speed} style={style}id={index} className="rainingCard"></div>
         )
       })
-       
+  
        
       }
     return(
       <div>
-      {loggedIn}
+      {game}
       {rainingCards}
       </div>
     )

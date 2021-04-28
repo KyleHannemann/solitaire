@@ -39,6 +39,9 @@ export default class Card extends Component{
         if (e.target.firstChild){
             return;
         }
+        if (e.target.style.backgroundImage !== `url("/static/media/BLUE_BACK.d7aabd90.svg")`){
+            return;
+        }
        this.props.flipCard(e.target.id, e.target.dataset.position)
     }
     
@@ -195,19 +198,19 @@ export default class Card extends Component{
         let lastCard;
         if (cards.length === 1){
             lastCard = (<div onDoubleClick={this.moveToFoundation} onClick={this.flipCard} key={cards[0].id} id={cards[0].id} style={{backgroundImage: `url(${cards[0].image})`}}
-            data-value={cards[0].value} className="card" draggable={cards[0].faceUp} data-position={cards[0].position}
+            data-value={cards[0].value} className="card" draggable={cards[0].faceUp} data-position={cards[0].position} 
             onDrop={this.onDrop} onDragOver={this.onDragOver} onDragStart={this.onDragStart}
             ></div>)
         }
         if (cards.length > 1){
            lastCard = (<div onDoubleClick={this.moveToFoundation} onClick={this.flipCard} key={cards[cards.length -1].id} id={cards[cards.length -1].id} style={{backgroundImage: `url(${cards[cards.length -1].image})`}}
-           data-value={cards[cards.length -1].value} className="card" draggable={cards[cards.length - 1].faceUp} data-position={cards[cards.length -1].position}
+           data-value={cards[cards.length -1].value} className="card" draggable={cards[cards.length - 1].faceUp} data-position={cards[cards.length -1].position} 
            onDrop={this.onDrop} onDragOver={this.onDragOver} onDragStart={this.onDragStart}
            ></div>);
         }
         for (let i = cards.length - 2; i >= 0; i --){
            let nextCard = (<div onDoubleClick={this.moveToFoundation} onClick={this.flipCard} key={cards[i].id} id={cards[i].id} style={{backgroundImage: `url(${cards[i].image})`}}
-           data-value={cards[i].value} className="card" draggable={cards[i].faceUp} data-position={cards[i].position}
+           data-value={cards[i].value} className="card" draggable={cards[i].faceUp} data-position={cards[i].position}  
            onDrop={this.onDrop} onDragOver={this.onDragOver} onDragStart={this.onDragStart}
            >{lastCard}</div>)
             lastCard = nextCard;

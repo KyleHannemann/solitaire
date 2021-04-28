@@ -9,6 +9,7 @@ app.post('/api/profiles/login', cnt.login)
 app.post('/api/profiles', cnt.create);
 app.put('/api/profiles', cnt.update);
 app.delete('/api/profiles/:id', cnt.delete)
+app.put('/api/profiles/games', cnt.updateGames)
 app.listen(port, ()=>{
     console.log(`listening on port ${port}`)
 })

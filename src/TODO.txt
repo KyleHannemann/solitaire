@@ -1,4 +1,17 @@
 
+Things I learned:
+
+-Slow Down, methodically plan out app so I dont have to
+fix so many bugs that I create. If I am more precise in creating then I will spend less
+time in the long run.
+
+-set up api/server first
+
+-Keep language consistent. put all my props in same place on each component.
+keep each component more organized that way.
+
+-get user Id as soon as logged in so I can use it in my req params,
+rather than having to validate username and password every time.
 
 
 
@@ -8,29 +21,34 @@
 
 BUGS:
 
--undo for flipping cards is not working corectly:
-    I think cards from either waste or stock are causing problem    
+   
 
 -doubleClick for tableau needs to only work for topcard
 
--moving card from foundation to tableau turns it around;
+-foundation opacity..
 
 
--start over
+-wingame is lagging
+
+-users cant have same username
+
+-Check API with postman
+
+
+
+TODO:
+
+
+
 
 -rules section in home
+    -lightbulb
+
+-Title on homepage/login
+
+-update User Stats On Win Game;
 
 
--dropdown menu in game
-    display; (rules, go to home, newgame, (pausegame?))
-
-- wingame function
-
-- Improve checkValidDrop function if noticing bugs
-    not working 100%
-
-- put info into user on completed game, restart etc..
-(won game, time, moves, etc)
 
 
 

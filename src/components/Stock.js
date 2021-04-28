@@ -28,7 +28,7 @@ export default class Stock extends Component{
         
         return(
             <div id="stock">
-                <div id="reset" onClick={this.flipCard}>Reset</div>
+                <div id="reset" onClick={this.flipCard}></div>
                 {stock}</div>
         )
     }

@@ -1,5 +1,5 @@
 import axios from 'axios';
-
+import App from '../App';
 import React, {Component} from 'react';
 import Register from './Register';
 
@@ -10,9 +10,11 @@ export default class Login extends Component{
             userName: "",
             password: "",
             newUser: false,
-            loggedIn: false,
+            loggedIn: true,
             newPassword: "",
             newUserName: "",
+            solitaire: true,
+            stats: [],
             
         }
         this.update = this.update.bind(this);
@@ -22,6 +24,14 @@ export default class Login extends Component{
         this.closeWindow = this.closeWindow.bind(this);
         this.edit = this.edit.bind(this);
         this.delete = this.delete.bind(this);
+        this.logGame = this.logGame.bind(this)
+    }
+    logGame(time, moves, checkWin){
+        axios.put('/api/profiles/games',{gameWon: true, time: time, moves: moves, userName: 
+        this.state.userName, password: this.state.password})
+        .then(response=>{
+            this.setState({stats: response.data[0]})
+        }).catch(err=>console.log(err))
     }
     delete(e){
         e.preventDefault();
@@ -50,10 +60,13 @@ export default class Login extends Component{
         }
         axios.put('/api/profiles', newInfo).then(response=>{console.log(response);if (response.data){
             alert("update successful");
+            let {userName, password} = response.data[0];
             let window = document.getElementById("edit");
            window.style.marginBottom = "2000px";
            window.style.display = "none";
-           this.setState({userName: this.state.newUserName})
+           this.setState({userName: userName, password: password}, ()=>{
+           })
+           
             }
             else{
                 alert("update failed")
@@ -75,7 +88,9 @@ export default class Login extends Component{
         console.log(creds)
         axios.post('/api/profiles/login', creds)
         .then(response=>{
-            if (response.data.length === 1){this.welcome(response)}else{alert('invalid username and/or password')}
+            if (response.data.length === 1){
+                this.welcome(response);
+            }else{alert('invalid username and/or password')}
         }).catch(error=>{console.log(error); alert("error")})
         
     }
@@ -111,10 +126,41 @@ export default class Login extends Component{
                 </div>
             )
         }
-        else if ((this.state.newUser === false && this.state.loggedIn === true)){
+        else if ((this.state.newUser === false && this.state.loggedIn === true) && this.state.solitaire === false){
             let stats;
             if (this.state.stats){
                 let {bestTime, gamesPlayed, gamesWon, leastMoves} = this.state.stats;
+                if (bestTime === null){
+                    bestTime = ""
+                }
+                else{
+                    function getTime(t){
+                        let seconds = t;
+                        let minutes = 0;
+                        let hours = 0;
+                        while(seconds >= 60){
+                            while (seconds >= 3600){
+                            hours += 1;
+                            seconds -= 3600;
+                            }
+                            minutes += 1;
+                            seconds -= 60;
+                        }
+                        let time;
+                        if (seconds < 10 && minutes < 10){
+                            time = `${hours}:0${minutes}:0${seconds}`
+                        }
+                        else if (seconds < 10){
+                            time = `${hours}:${minutes}:0${seconds}`
+                        }
+                        else if (minutes < 10){
+                            time = `${hours}:0${minutes}:${seconds}`
+                        }
+                        else {time = `${hours}:${minutes}:${seconds}`}
+                        return time;
+                    }
+                    bestTime = getTime(bestTime);
+                }
                 let winPercentage = "";
                 if (parseInt(gamesPlayed) > 0){
                     winPercentage = parseInt(gamesWon)/parseInt(gamesPlayed);
@@ -138,9 +184,7 @@ export default class Login extends Component{
             let edit = (<div id="edit">
             <form>
                 <button data-name="edit" id="editClose" onClick={this.closeWindow}>X</button>
-                <div><span>Current UserName</span><input name="userName"onChange={this.update}/></div>
                 <div><span>New UserName</span><input name="newUserName"onChange={this.update}/></div>
-                <div><span>Current Password</span><input name="password" onChange={this.update}/></div>
                 <div><span>New Password</span><input name="newPassword" onChange={this.update}/></div>
                 <div><button onClick={this.edit}>Submit</button></div>
                 <div><button onClick={this.delete}>Delete Profile</button></div>
@@ -155,10 +199,14 @@ export default class Login extends Component{
                     <div data-name="stats" onClick={this.openWindow}>View Stats</div>
                     <div>View Rankings</div>
                     <div data-name="edit"onClick={this.openWindow}>Edit Profile</div>
-                    <div onClick={this.props.startGame}>Start New Game</div>
+                    <div onClick={()=>{this.setState({solitaire: true}, ()=> console.log(this.state))}}>Start Game</div>
                 </div>
                 </div>
             )
+        }
+        else if (this.state.loggedIn === true && this.state.solitaire === true){
+            console.log('start')
+            login = (<App logGame={this.logGame} returnHome={()=>{this.setState({solitaire: false})}}/>)
         }
         else{login = (<Register login={()=>{this.setState({newUser: false})}}/>)}
         return(
