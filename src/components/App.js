@@ -60,6 +60,11 @@ class App extends Component {
    this.newGame = this.newGame.bind(this);
    this.logGame = this.logGame.bind(this);
    this.returnHome = this.returnHome.bind(this);
+   this.autoComplete = this.autoComplete.bind(this);
+   this.autoCompleteStart = this.autoCompleteStart.bind(this)
+   //DELETE BOTTOM METHOD
+   this.testComplete = this.testComplete.bind(this);
+   this.checkValidDrop = this.checkValidDrop.bind(this);
   }
   returnHome(e){
     this.setState({ cards: svg.map(el=>{el.image = el.back; return el}),
@@ -83,6 +88,10 @@ class App extends Component {
   }
   newGame(){
     clearInterval(timer);
+    document.getElementById("foundationHearts").style.opacity = ".5";
+    document.getElementById("foundationSpades").style.opacity = ".5";
+    document.getElementById("foundationDiamonds").style.opacity = ".5";
+    document.getElementById("foundationClubs").style.opacity = ".5";
     this.logGame(false);
     this.setState({ cards: svg.map(el=>{el.image = el.back; return el}),
       stock: [],tableau1: [],tableau2: [],tableau3: [],tableau4: [],
@@ -94,7 +103,6 @@ class App extends Component {
   winGame(){
     this.logGame(true);
     this.setState({win: true});
-    document.getElementById("winnerWinnerChickenDinner").style.display = `flex`;
     clearInterval(timer)
     let cards = document.querySelectorAll('.card');
     console.log(cards)
@@ -231,13 +239,13 @@ class App extends Component {
   update(cardId, oldPosition, newPosition, children){
     this.setState({moves: this.state.moves + 1})
     let newMove = [this.state];
-    this.setState({history: this.state.history.concat(newMove)}, ()=>console.log(this.state.history));
+    this.setState({history: this.state.history.concat(newMove)});
 
   if (children === false){
     
    this.setState({[oldPosition]: this.state[oldPosition].filter(card=>card.id !== parseInt(cardId))});
    this.setState({[newPosition]: this.state[newPosition].concat([this.state.cards[cardId]])
-    .map(card=>{card.position = newPosition; return card;})}, ()=>this.checkWin())
+    .map(card=>{card.position = newPosition; card.faceUp = true; return card;})}, ()=>this.checkWin())
   } 
   else {
     let findIndex = this.state[oldPosition];
@@ -247,7 +255,7 @@ class App extends Component {
     {if (index < startIndex){return card;}else{return false;}})});
     let arr = this.state[oldPosition].slice(startIndex);
     this.setState({[newPosition]: this.state[newPosition].concat(arr)
-      .map(card=>{card.position = newPosition; return card;})}, ()=>{this.checkWin()});
+      .map(card=>{card.position = newPosition; card.faceUp = true ;return card;})}, ()=>{this.checkWin()});
   }
 }
   checkWin(){
@@ -256,11 +264,170 @@ class App extends Component {
       this.winGame();
       return;
     }
-     else {
+    
+    else {
+      
+      let tableauFaceUp = true;
+      let  {tableau1, tableau2,tableau3,tableau4,tableau5,tableau6, tableau7, stock, waste} = this.state;
+      let tableau = [tableau1, tableau2,tableau3,tableau4,tableau5,tableau6, tableau7];
+      for (let i = 0; i < tableau.length; i++){
+        for (let j = 0; j < tableau[i].length; j++){
+              if (tableau[i][j].image.includes('BLUE_BACK') === true){
+                tableauFaceUp = false;
+                break;
+              }
+        }
+      }
+      if (tableauFaceUp === true && stock.length === 0 && waste.length === 0){
+        document.getElementById('autoComplete').style.display = 'flex';
+      }
       return;
     }
 
   }
+  testComplete(){
+    let  {tableau1, tableau2,tableau3,tableau4,tableau5,tableau6, tableau7} = this.state;
+      let tableau = [tableau1, tableau2,tableau3,tableau4,tableau5,tableau6, tableau7];
+      for (let i = 0; i < tableau.length; i++){
+        for (let j = 0; j < tableau[i].length; j++){
+              tableau[i][j].image = tableau[i][j].cardImage;
+                
+              
+        }
+      }
+      this.setState({stock: [], waste: []})
+    
+
+  }
+  autoCompleteStart(){
+    let  {tableau1, tableau2,tableau3,tableau4,tableau5,tableau6, tableau7} = this.state;
+    let tableau = [tableau1, tableau2,tableau3,tableau4,tableau5,tableau6, tableau7];
+    let cards = 0;
+    for (let i = 0; i < tableau.length; i++){
+      for (let j = 0; j < tableau[i].length; j++){
+          cards += 1;
+      }
+    }
+    console.log(cards)
+    for (let z = 0; z < cards; z++){
+      setTimeout(this.autoComplete, z * 300);
+    }
+  }
+  autoComplete(){
+    
+    let  {tableau1, tableau2,tableau3,tableau4,tableau5,tableau6, tableau7} = this.state;
+    let tableau = [tableau1, tableau2,tableau3,tableau4,tableau5,tableau6, tableau7];
+    let hearts, spades, diamonds, clubs;
+    //get the value of the top card(last) in foundation
+    if (this.state.foundationHearts.length === 0){
+      hearts = {position:'foundationHearts' , value: 'none'}
+    }
+    else{hearts = this.state.foundationHearts[this.state.foundationHearts.length - 1]}
+    if (this.state.foundationClubs.length === 0){
+      clubs = {position:'foundationClubs', value: 'none'}
+    }
+    else{clubs = this.state.foundationClubs[this.state.foundationClubs.length - 1]}
+    if (this.state.foundationDiamonds.length === 0){
+      diamonds = {position:'foundationDiamonds', value: 'none' };
+    }
+    else{diamonds = this.state.foundationDiamonds[this.state.foundationDiamonds.length - 1]}
+    if (this.state.foundationSpades.length === 0){
+      spades = {position: 'foundationSpades', value: 'none'}
+    }
+    else{spades = this.state.foundationSpades[this.state.foundationSpades.length - 1]}
+  let foundationTop = {
+      hearts: hearts,
+      diamonds: diamonds,
+      spades: spades,
+      clubs: clubs
+    }
+    //iterate through each bottom(last) card in tableau to find a match to (last) card of foundation(there will be at least one match);
+    for (let i = 0; i < tableau.length; i++){
+      for (let j = 0; j < tableau[i].length; j++){
+        let card = tableau[i][j];
+        for (let foundation in foundationTop){
+            let checkValid = this.checkValidDrop(card, foundationTop[foundation]);
+            if (checkValid === true){
+              let newPosition = foundationTop[foundation].position;
+              this.update(card.id, card.position, newPosition, false);
+              return;
+            }
+            //check if true
+        }
+        
+      }
+    }
+  }
+    //need a check function;
+    //spread that card to its correct foundation
+    //add a move to move count
+    //return to start
+    
+    //when complete make it as an interval
+  
+  checkValidDrop(card, foundationTop){
+    if (foundationTop.position === "foundationClubs" && card.value === "AC"){
+          return true;
+        }
+      
+    
+    if (foundationTop.position === "foundationDiamonds" && card.value === "AD"){
+          return true;
+        }
+    
+    if (foundationTop.position === "foundationSpades" && card.value === "AS"){
+          return true;
+        }
+    
+    if (foundationTop.position === "foundationHearts" && card.value === "AH"){
+          return true;
+        }
+     
+    if (foundationTop.value === "none"){
+      return false;
+    }
+
+    let newValue = {"A": 1, "0": 10, "J": 11, "Q": 12, "K": 13}
+    let check = ["A","K","Q","J", "0"]
+    let cardSuit = card.value[card.value.length - 1];
+    let foundationTopSuit = foundationTop.value[foundationTop.value.length - 1];
+    let cardValue = card.value[card.value.length - 2];
+    let foundationTopValue = foundationTop.value[foundationTop.value.length - 2];
+    
+    if(check.includes(foundationTopValue) === true){foundationTopValue = newValue[foundationTopValue]}
+    else{foundationTopValue = parseInt(foundationTopValue)};
+    
+    if(check.includes(cardValue) === true){cardValue = newValue[cardValue]}
+    else{cardValue = parseInt(cardValue)};
+    if (foundationTopSuit === "C"){
+        if ((cardSuit === "C") && (cardValue - foundationTopValue === 1)){
+                return true;
+        }
+        else{return false;} 
+    }
+    if (foundationTopSuit === "D"){
+        if ((cardSuit === "D") && (cardValue - foundationTopValue === 1)){
+
+                return true;
+        }
+        else{return false;} 
+    }
+    if (foundationTopSuit === "H"){
+        if ((cardSuit === "H") && (cardValue - foundationTopValue === 1)){
+           
+            return true;
+        }
+        else{return false;} 
+    }
+    if (foundationTopSuit === "S"){
+        if ((cardSuit === "S") && (cardValue - foundationTopValue === 1)){
+            return true;
+        }
+        else{return false;} 
+    }
+    
+
+}
   
   render() {
     
@@ -290,6 +457,7 @@ class App extends Component {
     let game = []
   
     game = (  <div>
+      <button onClick={this.testComplete}>test auto</button>
       <button id="infoButton"onClick={()=>{let x  = document.getElementById('gameInfo'); x.style.display = "block"}}>💡</button>
       <section id="gameInfo">
         <button id="closeInfo" onClick={()=>{ let x = document.getElementById('gameInfo'); x.style.display = "none"; console.log(x)}}>X</button>
@@ -313,9 +481,9 @@ class App extends Component {
 <footer>Read more at: https://www.ducksters.com/games/solitaire_rules.php
 This text is Copyright © Ducksters.</footer>
               </section>
-      <div id="winnerWinnerChickenDinner"><span>Well Played!</span><button name="winner"onClick={this.returnHome}>Return Home</button></div>
       <GameDets returnHome={this.returnHome} newGame={this.newGame} moves={this.state.moves} time={this.state.time} undo={this.undo}/>
       <div id="container1">
+        <div id="autoComplete"><span>Auto Complete Game?</span><button id="autoCompleteButton" onClick={this.autoCompleteStart}>Yes</button><button id="closeAutoComplete" onClick={()=>{document.getElementById('autoComplete').style.display = "none"}}>No</button></div>
       <Stock cards={this.state.stock}  update={this.update} resetStock={this.resetStock}/>
       <Waste foundationTopCard={foundationTopCard} cards={this.state.waste} update={this.update} flipCard={this.flipCard}/>
       <Foundation id="foundationHearts"  cards={this.state.foundationHearts}  update={this.update} />

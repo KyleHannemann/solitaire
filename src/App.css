@@ -22,6 +22,7 @@
   opacity: 1;
 }
 #gameInfo{
+  display:none;
   width: 90vw;
   height: 100vh;
   color: white;
@@ -78,7 +79,7 @@
   left: 33%;
   width: 400px;
   border: 5px solid black;
-  display: none;
+  display: flex;
   flex-direction: column;
   justify-content:center;
   align-items: center;
@@ -201,7 +202,7 @@
   background-repeat: no-repeat;
   background-position-x:center;
   background-position-y: center;
-  
+  opacity: .5;
   border: 1px solid black
 }
 #foundationSpades{
@@ -209,7 +210,7 @@
   background-repeat: no-repeat;
   background-position-x:center;
   background-position-y: center;
-  
+  opacity: .5;
   border: 1px solid black
 }
 #foundationDiamonds{
@@ -217,7 +218,7 @@
   background-repeat: no-repeat;
   background-position-x:center;
   background-position-y: center;
-  
+  opacity: .5;
   border: 1px solid black
 }
 #foundationClubs{
@@ -225,7 +226,7 @@
   background-repeat: no-repeat;
   background-position-x:center;
   background-position-y: center;
-  
+  opacity: .5;
   border: 1px solid black
 }
  
@@ -233,6 +234,12 @@ body{
   background-image: url('./cardTable.png');
   background-size:cover;
 
+}
+#viewStatsPage{
+  background-image: url('./cardTable.png');
+  background-size: cover;
+  height: 100vh;
+  width: 100vw;
 }
 #login, #register{
   height: 100vh;
@@ -291,6 +298,50 @@ body{
  
   
 }
+#autoComplete{
+  position: absolute;
+  top: 50%;
+  left: 40%;
+  display: none;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  border-radius: 5px;
+  background-color: #f2f2f2;
+  padding: 30px;
+  z-index: 100;
+}
+#autoCompleteButton{
+  width: 100%;
+  padding: 12px 20px;
+  margin: 8px 0;
+  display: inline-block;
+  background-color: rgb(123, 168, 123);
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+  color: white;
+}
+#closeAutoComplete{
+  width: 100%;
+  padding: 12px 20px;
+  margin: 8px 0;
+  display: inline-block;
+  background-color: rgb(228, 90, 90);
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+  color: white;
+}
+
+#autoCompleteButton:hover{
+  cursor: pointer;
+  background-color: rgb(82, 131, 82);
+}
+#closeAutoComplete:hover{
+  cursor: pointer;
+  background-color: rgb(228, 64, 64);
+}
 #editClose{
   margin-left: 90%;
   margin-bottom: 10px;
@@ -306,6 +357,10 @@ body{
   z-index: 5;
 }
 
+#rankUserRow > td {
+  background-color: green;
+  font-weight: 900;
+}
 #welcomeContainer{
   height: 100vh;
   width: 100vw;

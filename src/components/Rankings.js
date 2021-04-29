@@ -7,6 +7,7 @@ export default class Rankings extends Component{
 
         this.state = {
             profiles: [],
+            
         }
         this.sort = this.sort.bind(this)
     }
@@ -60,6 +61,8 @@ export default class Rankings extends Component{
     }
 
     render(){
+        let {user} = this.props;
+        console.log(user);
         let ranks = (
             <div id="statsTable">
             <table>
@@ -74,8 +77,16 @@ export default class Rankings extends Component{
                 <tbody>
                     {this.state.profiles.map((el, index)=>{
                         let {userName, gamesWon, bestTime, leastMoves} = el;
-                        
-                        return(
+                        if (userName === user){
+                            return (<tr id="rankUserRow" key={index}>
+                                <td>{userName}</td>
+                                <td>{gamesWon}</td>
+                                <td>{bestTime}</td>
+                                <td>{leastMoves}</td>
+                            </tr>)
+                        }
+                        else return(
+    
                             <tr key={index}>
                                 <td>{userName}</td>
                                 <td>{gamesWon}</td>
@@ -89,7 +100,7 @@ export default class Rankings extends Component{
             </div>
         )
         return(
-            <div>
+            <div id="viewStatsPage">
                 <button id="statsReturnHome" onClick={()=>{this.props.home()}}>Home</button>
                 <h1 id="sortedBy">Sort By</h1>
                 <div id="sortByButtons"><button id="gamesWon" onClick={this.sort}>Games Won</button><button id="bestTime" onClick={this.sort}>Best Time</button><button id="leastMoves" onClick={this.sort}>Least Moves</button></div>

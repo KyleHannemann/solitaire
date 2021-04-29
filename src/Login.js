@@ -225,7 +225,7 @@ export default class Login extends Component{
             )
         }
         else if (this.state.loggedIn === true && this.state.rankings === true){
-            login = (<Rankings home={()=>{this.setState({rankings: false})}}/>)
+            login = (<Rankings user={this.state.userName} home={()=>{this.setState({rankings: false})}}/>)
         }
         else if (this.state.loggedIn === true && this.state.solitaire === true){
             console.log('start')

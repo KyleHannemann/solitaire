@@ -1,36 +1,7 @@
-let  profiles = [
-    {
-        id: 0,
-        userName: "kyle1",
-        password: "kyle",
-        gamesPlayed: 99,
-        email: "",
-        gamesWon: 8,
-        leastMoves: 100,
-        bestTime: 200,
-},
-{
-    id: 1,
-    userName: "kyle2",
-    password: "kyle",
-    gamesPlayed: 0,
-    email: "",
-    gamesWon: 0,
-    leastMoves: null,
-    bestTime: null,
-},
-{
-    id: 2,
-    userName: "kyle3",
-    password: "kyle",
-    gamesPlayed: 99,
-    email: "",
-    gamesWon: 34,
-    leastMoves: 30,
-    bestTime: 319,
-}
-];
-let id = 4;
+
+let data = require('./MOCK_DATA')
+let profiles = data;
+let id = 101;
 
 module.exports = {
     login: (req,res)=>{

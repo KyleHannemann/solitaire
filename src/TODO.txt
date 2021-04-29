@@ -7,6 +7,16 @@ time in the long run.
 
 -set up api/server first
 
+-DONOT repeat myself as often!
+    I spent too much time debuging code that was repeated
+    I need to plan out my functions and variable better in order to reuse them as often as possible
+
+
+-use least amount of data and variables as possible:
+I created new variables to see if card was faceup when i could have just checked the card image to see if faceup.
+This caused more room for error and made me have to keep track of more moving pieces.
+
+
 -Keep language consistent. put all my props in same place on each component.
 keep each component more organized that way.
 
@@ -16,12 +26,21 @@ rather than having to validate username and password every time.
 
 
 
+Check:
+
+New User Info:
+Rankings:
+GamePlay Working:
+AutoComplete Working
+Undo Working;
+Win game Working
+return to Home Working
+updated stats working;
 
 
 
 BUGS:
 
- 
 
 -win percentage?
 
@@ -42,7 +61,7 @@ BUGS:
 
 TODO:
 
-
+- remove old console.logs
 
 -Title on homepage/login
 
