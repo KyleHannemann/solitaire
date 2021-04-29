@@ -1,13 +1,13 @@
-import './App.css';
+import '../App.css';
 import React, {Component} from 'react';
-import TableauColumn from './components/TableauColumn';
-import backOfCard from './components/BLUE_BACK.svg';
-import Foundation from './components/Foundation';
-import GameDets from './components/GameDets';
-import Stock from './components/Stock';
-import Waste from './components/Waste';
+import TableauColumn from './TableauColumn';
+import backOfCard from './BLUE_BACK.svg';
+import Foundation from './Foundation';
+import GameDets from './GameDets';
+import Stock from './Stock';
+import Waste from './Waste';
 
-const reqSvgs = require.context('./cards', true, /\.svg$/)
+const reqSvgs = require.context('../cards', true, /\.svg$/)
 const paths = reqSvgs.keys();
 const svg = paths.map(path => reqSvgs(path))
 for (let i = 0; i < svg.length; i++){
@@ -23,7 +23,7 @@ for (let i = 0; i < svg.length; i++){
   svg[i].image = svg[i].back
 }
 let timer;
-
+let rain;
 //State: cards, stock, tableau columns 1-7, waste, foundation, moves, history, ?time, 
 //Methods: update states above, update history, updatemoves, shuffle
 class App extends Component {
@@ -61,12 +61,21 @@ class App extends Component {
    this.logGame = this.logGame.bind(this);
    this.returnHome = this.returnHome.bind(this);
   }
-  returnHome(){
-    this.logGame(false);
+  returnHome(e){
+    this.setState({ cards: svg.map(el=>{el.image = el.back; return el}),
+    stock: [],tableau1: [],tableau2: [],tableau3: [],tableau4: [],
+    tableau5: [],tableau6: [],tableau7: [],waste: [],
+    foundationDiamonds: [],foundationHearts: [],foundationSpades: [],
+    foundationClubs: [],moves: 0,time: 0, history: [],});
+    if (e.target.name !== "winner"){
+      this.logGame(false);
+    }
+   
     this.props.returnHome();
   }
   componentWillUnmount(){
     clearInterval(timer);
+    clearInterval(rain);
   }
   logGame(checkWin){
     this.props.logGame(this.state.time, this.state.moves, checkWin);
@@ -79,20 +88,29 @@ class App extends Component {
       stock: [],tableau1: [],tableau2: [],tableau3: [],tableau4: [],
       tableau5: [],tableau6: [],tableau7: [],waste: [],
       foundationDiamonds: [],foundationHearts: [],foundationSpades: [],
-      foundationClubs: [],moves: 0,time: 0, history: [],}, ()=>{
+      foundationClubs: [],moves: 0,time: 0, history: [], win:false}, ()=>{
         this.startGame()});
   }
   winGame(){
+    this.logGame(true);
     this.setState({win: true});
+    document.getElementById("winnerWinnerChickenDinner").style.display = `flex`;
     clearInterval(timer)
     let cards = document.querySelectorAll('.card');
     console.log(cards)
-    
+    setTimeout(function(){
+      let rainingCards = document.querySelectorAll('.rainingCard');
+      for (let i = 0; i < rainingCards.length; i++){
+        rainingCards[i].style.opacity = 1;
+      }
+    }, 10)
+
    setTimeout(function(){
       let rainingCards = document.querySelectorAll('.rainingCard');
       console.log(rainingCards)
       function raindown(){
         for (let i = 0; i < rainingCards.length; i++){
+          rainingCards[i].style.transition = "0s"
           let speed = rainingCards[i].dataset.speed;
           let bottom = rainingCards[i].style.bottom;
           let number = bottom.slice(0, bottom.length - 2);
@@ -105,17 +123,17 @@ class App extends Component {
         }
         
       }
-      let rain = setInterval(raindown, 100)
-      setTimeout(function(){clearInterval(rain)}, 25000)
-    }, 100)
+      rain = setInterval(raindown, 50)
+      setTimeout(function(){clearInterval(rain)}, 30000)
+    }, 2300)
  
   
   }
   componentDidMount(){
+    this.setState({cards: svg})
     this.startGame();
   }
   startGame(){
-    console.log();
     this.shuffle();
     timer = setInterval(this.startTime, 1000)
     
@@ -270,12 +288,36 @@ class App extends Component {
     }
 
     let game = []
-    let rainingCards = [];
-    if (this.state.win === false){ game = (  <div>
+  
+    game = (  <div>
+      <button id="infoButton"onClick={()=>{let x  = document.getElementById('gameInfo'); x.style.display = "block"}}>💡</button>
+      <section id="gameInfo">
+        <button id="closeInfo" onClick={()=>{ let x = document.getElementById('gameInfo'); x.style.display = "none"; console.log(x)}}>X</button>
+        <ul id="quickTips">
+          <h3>Quick Tips</h3>
+          <li>click and drag cards to move around board</li>
+          <li>double-click cards to move into foundation</li>
+          <li>click cards to flip</li>
+          
+        </ul>
+                <h1>Solitaire Rules</h1>
+                <h3>Goal</h3>
+                <p>The goal of the game is to move all of the cards to the "foundations" these are four additional stacks of cards. At the start of the game these stacks are empty. Each stack represents a suit (hearts, clubs, etc). They must be stacked by suit and in order, starting with the Ace, then the 2, 3, 4,…..ending with the Queen and then King.
+</p>
+                <h3>Game Play</h3>
+              <p>Cards that are face up and showing may be moved from the stock pile or the columns to the foundation stacks or to other columns. To move a card to a column, it must be one less in rank and the opposite color. For example, if it was a 9 of hearts (red), you could put an 8 of spades or clubs onto it. Stacks of cards may be moved from one column to another as long as they maintain the same order (highest to lowest, alternating colors).
+</p>
+<p>If you get an empty column, you can start a new column with a King. Any new column must be started with a King (or a stack of cards that starts with a King). To get new cards from the stock pile, you turn three cards at a time face up into the stack next to the stock pile called the waist stack. You can only play the top card off the waist stack. If you run out of stock cards, turn the waist stack over to make a new stock pile and start again, pulling the top three cards off, turning them over, and starting a new waist stack.
+
+</p>
+<footer>Read more at: https://www.ducksters.com/games/solitaire_rules.php
+This text is Copyright © Ducksters.</footer>
+              </section>
+      <div id="winnerWinnerChickenDinner"><span>Well Played!</span><button name="winner"onClick={this.returnHome}>Return Home</button></div>
       <GameDets returnHome={this.returnHome} newGame={this.newGame} moves={this.state.moves} time={this.state.time} undo={this.undo}/>
       <div id="container1">
       <Stock cards={this.state.stock}  update={this.update} resetStock={this.resetStock}/>
-      <Waste foundationTopCard={foundationTopCard} update={this.update} cards={this.state.waste} update={this.update} flipCard={this.flipCard}/>
+      <Waste foundationTopCard={foundationTopCard} cards={this.state.waste} update={this.update} flipCard={this.flipCard}/>
       <Foundation id="foundationHearts"  cards={this.state.foundationHearts}  update={this.update} />
       <Foundation id="foundationSpades" cards={this.state.foundationSpades} update={this.update} />
       <Foundation id="foundationDiamonds" cards={this.state.foundationDiamonds} update={this.update} />
@@ -291,20 +333,42 @@ class App extends Component {
         <TableauColumn foundationTopCard={foundationTopCard} id="tableau6"cards={this.state.tableau6} update={this.update} flipCard={this.flipCard}/>
         <TableauColumn foundationTopCard={foundationTopCard} id="tableau7"cards={this.state.tableau7} update={this.update} flipCard={this.flipCard}/>
       </div>
-      </div>)}
-      else if (this.state.win === true){
+      </div>)
+    if (this.state.win === true){
       let cards = []
       for (let i = 0; i < 2; i++){
         for (let j = 0; j < svg.length; j++){
           let card = svg[j];
           card.z = Math.floor(Math.random() * 100);
-          card.speed = Math.floor(Math.random() * 8 + 4);
-          card.bottom = window.innerHeight;
+          card.speed = Math.floor(Math.random() * 8 + 1);
+          card.bottom = Math.floor(Math.random() * window.innerHeight);
           card.left = Math.floor(Math.random() * window.innerWidth - 30)
           cards.push(card);
         }
       }
-      rainingCards = cards.map((el, index)=>{
+      game = (<div> 
+              <button id="infoButton"onClick={this.winGame}>💡</button>
+        <div id="winnerWinnerChickenDinner"><span>Well Played!</span><button name="winner"onClick={this.returnHome}>Return Home</button></div>
+        <GameDets  moves={this.state.moves} time={this.state.time}/>
+      <div id="container1">
+      <Stock cards={this.state.stock}  update={this.update} resetStock={this.resetStock}/>
+      <Waste foundationTopCard={foundationTopCard} update={this.update} cards={this.state.waste} flipCard={this.flipCard}/>
+      <Foundation id="foundationHearts"  cards={this.state.foundationHearts}  update={this.update} />
+      <Foundation id="foundationSpades" cards={this.state.foundationSpades} update={this.update} />
+      <Foundation id="foundationDiamonds" cards={this.state.foundationDiamonds} update={this.update} />
+      <Foundation id="foundationClubs" cards={this.state.foundationClubs} update={this.update} />
+      
+      </div>
+      <div id="tableau">
+        <TableauColumn foundationTopCard={foundationTopCard}  id="tableau1"cards={this.state.tableau1}   update={this.update} flipCard={this.flipCard}/>
+        <TableauColumn foundationTopCard={foundationTopCard} id="tableau2"cards={this.state.tableau2}  update={this.update} flipCard={this.flipCard}/>
+        <TableauColumn foundationTopCard={foundationTopCard} id="tableau3"cards={this.state.tableau3} update={this.update} flipCard={this.flipCard}/>
+        <TableauColumn foundationTopCard={foundationTopCard} id="tableau4"cards={this.state.tableau4} update={this.update} flipCard={this.flipCard}/>
+        <TableauColumn foundationTopCard={foundationTopCard} id="tableau5"cards={this.state.tableau5} update={this.update} flipCard={this.flipCard}/>
+        <TableauColumn foundationTopCard={foundationTopCard} id="tableau6"cards={this.state.tableau6} update={this.update} flipCard={this.flipCard}/>
+        <TableauColumn foundationTopCard={foundationTopCard} id="tableau7"cards={this.state.tableau7} update={this.update} flipCard={this.flipCard}/>
+      </div>
+        {cards.map((el, index)=>{
         let style = {
           backgroundImage: `url(${el.cardImage})`,
           zIndex: el.z,
@@ -315,14 +379,14 @@ class App extends Component {
         return(
           <div key={index} data-speed={el.speed} style={style}id={index} className="rainingCard"></div>
         )
-      })
+      })}
+      </div>)
   
        
       }
     return(
       <div>
       {game}
-      {rainingCards}
       </div>
     )
   }

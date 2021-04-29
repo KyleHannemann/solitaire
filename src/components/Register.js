@@ -30,10 +30,16 @@ export default class Register extends Component{
             email: email,
         }
 
-        axios.post('/api/profiles', newProfile).then(response=>console.log(response))
-        .catch(error=>console.log(error));
+        axios.post('/api/profiles', newProfile).then(response=>{console.log(response)
+        
+            this.props.login();
+        
+        })
+        .catch(error=>{console.log(error);
+        alert("username is unavailable")
+        });
 
-        this.props.login();
+        
        
     
     }

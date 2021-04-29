@@ -15,7 +15,9 @@ export default class Card extends Component{
         this.moveToFoundation = this.moveToFoundation.bind(this);
     }
     moveToFoundation(e){
-        //check to see if top CARD!!
+        if (e.target.firstChild){
+            return;
+        }
         let foundationKey = {
             D: "diamonds",
             H: "hearts",

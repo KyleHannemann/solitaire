@@ -21,18 +21,22 @@ rather than having to validate username and password every time.
 
 BUGS:
 
-   
+ 
 
--doubleClick for tableau needs to only work for topcard
-
--foundation opacity..
+-win percentage?
 
 
--wingame is lagging
 
--users cant have same username
 
--Check API with postman
+
+
+
+
+
+
+
+
+
 
 
 
@@ -40,13 +44,24 @@ TODO:
 
 
 
-
--rules section in home
-    -lightbulb
-
 -Title on homepage/login
 
--update User Stats On Win Game;
+
+
+-auto complete button;
+- add sound
+
+
+NEXT GAME?
+
+simon?
+frogger?
+angry birds?
+
+snake?
+
+tetris?
+
 
 
 

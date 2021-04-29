@@ -1,7 +1,9 @@
 import axios from 'axios';
-import App from '../App';
+import App from './components/App';
+
 import React, {Component} from 'react';
-import Register from './Register';
+import Register from './components/Register';
+import Rankings from './components/Rankings';
 
 export default class Login extends Component{
     constructor(props){
@@ -10,11 +12,12 @@ export default class Login extends Component{
             userName: "",
             password: "",
             newUser: false,
-            loggedIn: true,
+            loggedIn: false,
             newPassword: "",
             newUserName: "",
-            solitaire: true,
-            stats: [],
+            solitaire: false,
+            stats: "",
+            rankings: false,
             
         }
         this.update = this.update.bind(this);
@@ -27,10 +30,11 @@ export default class Login extends Component{
         this.logGame = this.logGame.bind(this)
     }
     logGame(time, moves, checkWin){
-        axios.put('/api/profiles/games',{gameWon: true, time: time, moves: moves, userName: 
+        axios.put('/api/profiles/games',{gameWon: checkWin, time: time, moves: moves, userName: 
         this.state.userName, password: this.state.password})
         .then(response=>{
-            this.setState({stats: response.data[0]})
+            console.log(response)
+            this.setState({stats: response.data})
         }).catch(err=>console.log(err))
     }
     delete(e){
@@ -45,27 +49,35 @@ export default class Login extends Component{
             }).catch(error=>console.log(error))
     }
     edit(e){
+        
         e.preventDefault();
         let {userName, password, newPassword, newUserName} = this.state;
+
         let newInfo;
+        if (newPassword.length === 0 && newUserName.length === 0){
+            alert("no changes have been made");
+            return;
+        }
         //could also account for blank space for checking for ascii values
-        if (newUserName.length < 0){
+        if (newUserName.length === 0){
             newInfo = {userName: userName, password: password, newPassword: newPassword};
         }
-        else if(newPassword.length < 0){
+        if(newPassword.length === 0){
             newInfo = {userName: userName, password: password,newUserName: newUserName};
         }
+        
         else{
             newInfo = {userName: userName, password: password, newUserName: newUserName, newPassword: newPassword}
         }
         axios.put('/api/profiles', newInfo).then(response=>{console.log(response);if (response.data){
             alert("update successful");
-            let {userName, password} = response.data[0];
+            let {userName, password} = response.data;
+        
             let window = document.getElementById("edit");
            window.style.marginBottom = "2000px";
            window.style.display = "none";
            this.setState({userName: userName, password: password}, ()=>{
-           })
+          console.log(this.state) })
            
             }
             else{
@@ -88,16 +100,18 @@ export default class Login extends Component{
         console.log(creds)
         axios.post('/api/profiles/login', creds)
         .then(response=>{
-            if (response.data.length === 1){
-                this.welcome(response);
+            if (response.data){
+                console.log(response)
+               this.welcome(response.data)
             }else{alert('invalid username and/or password')}
         }).catch(error=>{console.log(error); alert("error")})
         
     }
-    welcome(response){
-        this.setState({loggedIn: true})
-        this.setState({stats: response.data[0]})
-        console.log(response)
+    welcome(stats){
+        console.log(stats)
+        this.setState({stats: stats},()=>(this.setState({loggedIn: true})))
+       
+       
     }
     openWindow(e){
         e.preventDefault()
@@ -126,7 +140,7 @@ export default class Login extends Component{
                 </div>
             )
         }
-        else if ((this.state.newUser === false && this.state.loggedIn === true) && this.state.solitaire === false){
+        else if ((this.state.newUser === false && this.state.loggedIn === true) && this.state.solitaire === false && this.state.rankings === false){
             let stats;
             if (this.state.stats){
                 let {bestTime, gamesPlayed, gamesWon, leastMoves} = this.state.stats;
@@ -161,17 +175,22 @@ export default class Login extends Component{
                     }
                     bestTime = getTime(bestTime);
                 }
-                let winPercentage = "";
+                let winPercentage;
                 if (parseInt(gamesPlayed) > 0){
                     winPercentage = parseInt(gamesWon)/parseInt(gamesPlayed);
                     if (winPercentage === 0){
                         winPercentage = "0%"
                     }
-                    else{
-                    winPercentage = winPercentage.toFixed(2)
-                    winPercentage = winPercentage[2] + winPercentage[3] + "%"
+                   else if (winPercentage === 1){
+                        winPercentage = "100%"
+                    }
+                    else {
+                        winPercentage = winPercentage.toFixed(2)
+                    //  winPercentage = winPercentage.toFixed(2)
+                        winPercentage = winPercentage[2] + winPercentage[3] + "%"
                     }
                 }
+                else{winPercentage = ""}
                 stats = (<ul id="stats">
                     <button data-name="stats" onClick={this.closeWindow}>X</button>
                     <li>Best Time : {bestTime}</li>
@@ -197,12 +216,16 @@ export default class Login extends Component{
                 <div id="welcome">
                     <h3>Welcome {this.state.userName}</h3>
                     <div data-name="stats" onClick={this.openWindow}>View Stats</div>
-                    <div>View Rankings</div>
+                    <div onClick={()=>{this.setState({rankings: true})}}>View Rankings</div>
                     <div data-name="edit"onClick={this.openWindow}>Edit Profile</div>
                     <div onClick={()=>{this.setState({solitaire: true}, ()=> console.log(this.state))}}>Start Game</div>
+                    <div onClick={()=>{this.setState({loggedIn: false})}}>Logout</div>
                 </div>
                 </div>
             )
+        }
+        else if (this.state.loggedIn === true && this.state.rankings === true){
+            login = (<Rankings home={()=>{this.setState({rankings: false})}}/>)
         }
         else if (this.state.loggedIn === true && this.state.solitaire === true){
             console.log('start')

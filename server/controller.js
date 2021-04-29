@@ -3,9 +3,9 @@ let  profiles = [
         id: 0,
         userName: "kyle1",
         password: "kyle",
-        gamesPlayed: 10,
+        gamesPlayed: 99,
         email: "",
-        gamesWon: 0,
+        gamesWon: 8,
         leastMoves: 100,
         bestTime: 200,
 },
@@ -46,13 +46,21 @@ module.exports = {
             }
          
         })
-        res.status(200).send(profile);
+        res.status(200).send(profile[0]);
+        console.log(profile)
     },
     read: (req, res)=>{
         res.status(200).send(profiles);
+        console.log(profiles)
     },
     create: (req, res)=>{
         let {userName, password, email} = req.body;
+        for (let i = 0; i < profiles.length; i++){
+            if (profiles[i].userName === userName){
+                res.status(404).send("userName unavailable")
+                return;
+            }
+        }
         let user = {
             id: id,
             userName: userName,
@@ -66,6 +74,7 @@ module.exports = {
     profiles.push(user);
     id ++;
     res.status(200).send(profiles);
+    console.log(profiles)
 },
 ///MIGHT need to change this becasue i dont know if the actaul profiles array will be updated
     update: (req,res)=>{
@@ -93,7 +102,9 @@ module.exports = {
         }
         
         res.status(200).send(profiles[index]);
+
         }
+        console.log(profiles)
     },
     delete: (req, res)=>{
         let id = req.params.id;
@@ -111,14 +122,19 @@ module.exports = {
         else{
         res.status(404).send("not found")
         }
+        console.log(profiles)
     },
     updateGames:(req, res)=>{
+        let index = null;
         let {gameWon, time, moves, userName, password} = req.body;
         for (let i = 0; i < profiles.length; i++){
             if (profiles[i].userName === userName && profiles[i].password === password){
                 index = i;
                 break;
             }
+        }
+        if (index === null){
+            res.status(500).send("not found")
         }
         let bestTime = profiles[index].bestTime;
         if ((gameWon === true) && (bestTime === null || time < bestTime)){
@@ -142,6 +158,7 @@ module.exports = {
             leastMoves: leastMoves,
             bestTime: bestTime,
     }
-     res.status(200).send(profiles);   
+     res.status(200).send(profiles[index]); 
+     console.log(profiles)  
     }
 }
