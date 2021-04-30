@@ -61,20 +61,12 @@ TODO:
 -Title on homepage/login
 
 
-
+-improve login code (giant if statement)
 
 - add sound
 
 
-NEXT GAME?
 
-simon?
-frogger?
-angry birds?
-
-snake?
-
-tetris?
 
 
 

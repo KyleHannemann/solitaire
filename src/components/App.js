@@ -7,6 +7,7 @@ import GameDets from './GameDets';
 import Stock from './Stock';
 import Waste from './Waste';
 
+
 const reqSvgs = require.context('../cards', true, /\.svg$/)
 const paths = reqSvgs.keys();
 const svg = paths.map(path => reqSvgs(path))
@@ -62,7 +63,7 @@ class App extends Component {
    this.returnHome = this.returnHome.bind(this);
    this.autoComplete = this.autoComplete.bind(this);
    this.autoCompleteStart = this.autoCompleteStart.bind(this)
-   //DELETE BOTTOM METHOD
+
    this.checkValidDrop = this.checkValidDrop.bind(this);
   }
   returnHome(e){
@@ -137,8 +138,13 @@ class App extends Component {
   
   }
   componentDidMount(){
-    this.setState({cards: svg})
-    this.startGame();
+    this.setState({ cards: svg.map(el=>{el.image = el.back; el.faceUp = false; return el}),
+      stock: [],tableau1: [],tableau2: [],tableau3: [],tableau4: [],
+      tableau5: [],tableau6: [],tableau7: [],waste: [],
+      foundationDiamonds: [],foundationHearts: [],foundationSpades: [],
+      foundationClubs: [],moves: 0,time: 0, history: [], win:false}, ()=>{
+        this.startGame()});
+    
   }
   startGame(){
     this.shuffle();
@@ -186,7 +192,7 @@ class App extends Component {
    
   }
   shuffle(){
-    console.log("hi")
+
     let array = this.state.cards;
     for(let i = array.length - 1; i > 0; i--){
       const j = Math.floor(Math.random() * i)

@@ -1,9 +1,11 @@
 import axios from 'axios';
+import './App.css';
 import App from './components/App';
-
+import Memory from './components/memoryGame/Memory';
 import React, {Component} from 'react';
 import Register from './components/Register';
 import Rankings from './components/Rankings';
+import ChooseGame from './components/ChooseGame';
 
 export default class Login extends Component{
     constructor(props){
@@ -12,12 +14,16 @@ export default class Login extends Component{
             userName: "",
             password: "",
             newUser: false,
-            loggedIn: false,
+            loggedIn: true,
             newPassword: "",
             newUserName: "",
             solitaire: false,
+            memory: false,
+            memoryDifficulty: "easy",
             stats: "",
             rankings: false,
+            chooseGame: false,
+            
             
         }
         this.update = this.update.bind(this);
@@ -28,7 +34,12 @@ export default class Login extends Component{
         this.edit = this.edit.bind(this);
         this.delete = this.delete.bind(this);
         this.logGame = this.logGame.bind(this)
+        this.startMemory = this.startMemory.bind(this)
     }
+    startMemory(difficulty){
+        this.setState({memoryDifficulty: difficulty, memory: true, chooseGame: false}, ()=>console.log(this.state));
+    }
+    //SELECT Memory game (easy/Med/Hard)
     logGame(time, moves, checkWin){
         axios.put('/api/profiles/games',{gameWon: checkWin, time: time, moves: moves, userName: 
         this.state.userName, password: this.state.password})
@@ -41,7 +52,7 @@ export default class Login extends Component{
         e.preventDefault();
         let id = this.state.stats.id;
         axios.delete(`/api/profiles/${id}`).then(response=>
-            {console.log(response)
+            {
                 if (response.status === parseInt(200)){
                     alert("successfully deleted profile")
                     this.setState({loggedIn: false})
@@ -140,7 +151,10 @@ export default class Login extends Component{
                 </div>
             )
         }
-        else if ((this.state.newUser === false && this.state.loggedIn === true) && this.state.solitaire === false && this.state.rankings === false){
+        //check if any game is true;
+        //improve this giant if statement..
+        else if (this.state.newUser === false && this.state.loggedIn === true && this.state.memory === false && this.state.solitaire === false && this.state.rankings === false
+            && this.state.chooseGame === false){
             let stats;
             if (this.state.stats){
                 let {bestTime, gamesPlayed, gamesWon, leastMoves} = this.state.stats;
@@ -218,18 +232,26 @@ export default class Login extends Component{
                     <div data-name="stats" onClick={this.openWindow}>View Stats</div>
                     <div onClick={()=>{this.setState({rankings: true})}}>View Rankings</div>
                     <div data-name="edit"onClick={this.openWindow}>Edit Profile</div>
-                    <div onClick={()=>{this.setState({solitaire: true}, ()=> console.log(this.state))}}>Start Game</div>
+                    <div onClick={()=>{this.setState({chooseGame: true})}}>Choose Game</div>
                     <div onClick={()=>{this.setState({loggedIn: false})}}>Logout</div>
                 </div>
                 </div>
             )
         }
+        else if (this.state.loggedIn === true && this.state.chooseGame === true){
+           login= ( <ChooseGame solitaire={()=>{this.setState({solitaire: true, chooseGame: false})}}  memory={this.startMemory}/> )
+
+        }
+
         else if (this.state.loggedIn === true && this.state.rankings === true){
             login = (<Rankings user={this.state.userName} home={()=>{this.setState({rankings: false})}}/>)
         }
         else if (this.state.loggedIn === true && this.state.solitaire === true){
             console.log('start')
             login = (<App logGame={this.logGame} returnHome={()=>{this.setState({solitaire: false})}}/>)
+        }
+        else if (this.state.loggedIn === true && this.state.memory === true){
+            login = (<Memory difficulty={this.state.memoryDifficulty} />)
         }
         else{login = (<Register login={()=>{this.setState({newUser: false})}}/>)}
         return(
