@@ -63,11 +63,10 @@ class App extends Component {
    this.autoComplete = this.autoComplete.bind(this);
    this.autoCompleteStart = this.autoCompleteStart.bind(this)
    //DELETE BOTTOM METHOD
-   this.testComplete = this.testComplete.bind(this);
    this.checkValidDrop = this.checkValidDrop.bind(this);
   }
   returnHome(e){
-    this.setState({ cards: svg.map(el=>{el.image = el.back; return el}),
+    this.setState({ cards: svg.map(el=>{el.image = el.back; el.faceUp = false; return el}),
     stock: [],tableau1: [],tableau2: [],tableau3: [],tableau4: [],
     tableau5: [],tableau6: [],tableau7: [],waste: [],
     foundationDiamonds: [],foundationHearts: [],foundationSpades: [],
@@ -93,7 +92,7 @@ class App extends Component {
     document.getElementById("foundationDiamonds").style.opacity = ".5";
     document.getElementById("foundationClubs").style.opacity = ".5";
     this.logGame(false);
-    this.setState({ cards: svg.map(el=>{el.image = el.back; return el}),
+    this.setState({ cards: svg.map(el=>{el.image = el.back; el.faceUp = false; return el}),
       stock: [],tableau1: [],tableau2: [],tableau3: [],tableau4: [],
       tableau5: [],tableau6: [],tableau7: [],waste: [],
       foundationDiamonds: [],foundationHearts: [],foundationSpades: [],
@@ -245,7 +244,13 @@ class App extends Component {
     
    this.setState({[oldPosition]: this.state[oldPosition].filter(card=>card.id !== parseInt(cardId))});
    this.setState({[newPosition]: this.state[newPosition].concat([this.state.cards[cardId]])
-    .map(card=>{card.position = newPosition; card.faceUp = true; return card;})}, ()=>this.checkWin())
+    .map(card=>{card.position = newPosition;
+      if (card.id === parseInt(cardId)){
+        card.faceUp = true; 
+        card.image = card.cardImage;
+        return card;
+      }
+      return card;})}, ()=>this.checkWin())
   } 
   else {
     let findIndex = this.state[oldPosition];
@@ -254,8 +259,17 @@ class App extends Component {
     this.setState({[oldPosition]: this.state[oldPosition].filter((card, index)=>
     {if (index < startIndex){return card;}else{return false;}})});
     let arr = this.state[oldPosition].slice(startIndex);
+    console.log(arr)
     this.setState({[newPosition]: this.state[newPosition].concat(arr)
-      .map(card=>{card.position = newPosition; card.faceUp = true ;return card;})}, ()=>{this.checkWin()});
+      .map(card=>{card.position = newPosition;
+        for (var i = 0; i < arr.length; i++ ){
+          if (card.id === arr[i].id){
+            card.faceUp = true;
+            card.image = card.cardImage;
+            return card;
+          }
+        }
+        return card;})}, ()=>{this.checkWin()});
   }
 }
   checkWin(){
@@ -285,20 +299,7 @@ class App extends Component {
     }
 
   }
-  testComplete(){
-    let  {tableau1, tableau2,tableau3,tableau4,tableau5,tableau6, tableau7} = this.state;
-      let tableau = [tableau1, tableau2,tableau3,tableau4,tableau5,tableau6, tableau7];
-      for (let i = 0; i < tableau.length; i++){
-        for (let j = 0; j < tableau[i].length; j++){
-              tableau[i][j].image = tableau[i][j].cardImage;
-                
-              
-        }
-      }
-      this.setState({stock: [], waste: []})
-    
-
-  }
+ 
   autoCompleteStart(){
     let  {tableau1, tableau2,tableau3,tableau4,tableau5,tableau6, tableau7} = this.state;
     let tableau = [tableau1, tableau2,tableau3,tableau4,tableau5,tableau6, tableau7];
@@ -310,7 +311,7 @@ class App extends Component {
     }
     console.log(cards)
     for (let z = 0; z < cards; z++){
-      setTimeout(this.autoComplete, z * 300);
+      setTimeout(this.autoComplete, z * 150);
     }
   }
   autoComplete(){
@@ -457,7 +458,6 @@ class App extends Component {
     let game = []
   
     game = (  <div>
-      <button onClick={this.testComplete}>test auto</button>
       <button id="infoButton"onClick={()=>{let x  = document.getElementById('gameInfo'); x.style.display = "block"}}>💡</button>
       <section id="gameInfo">
         <button id="closeInfo" onClick={()=>{ let x = document.getElementById('gameInfo'); x.style.display = "none"; console.log(x)}}>X</button>

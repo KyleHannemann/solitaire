@@ -18,11 +18,9 @@ module.exports = {
          
         })
         res.status(200).send(profile[0]);
-        console.log(profile)
     },
     read: (req, res)=>{
         res.status(200).send(profiles);
-        console.log(profiles)
     },
     create: (req, res)=>{
         let {userName, password, email} = req.body;
@@ -45,7 +43,6 @@ module.exports = {
     profiles.push(user);
     id ++;
     res.status(200).send(profiles);
-    console.log(profiles)
 },
 ///MIGHT need to change this becasue i dont know if the actaul profiles array will be updated
     update: (req,res)=>{
@@ -75,7 +72,6 @@ module.exports = {
         res.status(200).send(profiles[index]);
 
         }
-        console.log(profiles)
     },
     delete: (req, res)=>{
         let id = req.params.id;
@@ -93,7 +89,6 @@ module.exports = {
         else{
         res.status(404).send("not found")
         }
-        console.log(profiles)
     },
     updateGames:(req, res)=>{
         let index = null;
@@ -130,6 +125,5 @@ module.exports = {
             bestTime: bestTime,
     }
      res.status(200).send(profiles[index]); 
-     console.log(profiles)  
     }
 }

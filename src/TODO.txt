@@ -26,23 +26,18 @@ rather than having to validate username and password every time.
 
 
 
-Check:
 
-New User Info:
-Rankings:
-GamePlay Working:
-AutoComplete Working
-Undo Working;
-Win game Working
-return to Home Working
-updated stats working;
+
+ 
+
 
 
 
 BUGS:
 
 
--win percentage?
+
+
 
 
 
@@ -67,7 +62,7 @@ TODO:
 
 
 
--auto complete button;
+
 - add sound
 
 
