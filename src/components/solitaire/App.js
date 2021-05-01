@@ -1,4 +1,4 @@
-import '../App.css';
+import '../../App.css';
 import React, {Component} from 'react';
 import TableauColumn from './TableauColumn';
 import backOfCard from './BLUE_BACK.svg';
@@ -8,7 +8,7 @@ import Stock from './Stock';
 import Waste from './Waste';
 
 
-const reqSvgs = require.context('../cards', true, /\.svg$/)
+const reqSvgs = require.context('../../cards', true, /\.svg$/)
 const paths = reqSvgs.keys();
 const svg = paths.map(path => reqSvgs(path))
 for (let i = 0; i < svg.length; i++){

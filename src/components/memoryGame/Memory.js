@@ -77,21 +77,21 @@ export default class Memory extends Component{
                   this.setState({checkingMatch: false})
 
                 }
-            }, 1500)
+            }, 1100)
            
         }
             //check to make sure not the same card
     }
     checkWin(){
         console.log('checkwin')
-        this.logGame(this.state.time, this.state.moves, false)
+        this.logGame(this.state.time, this.state.moves, true)
         //if (this.state.matchesFound === this.state.gameCards.length / 2){
            // this.logGame(this.state.time, this.state.moves, true);
             //console.log('win')
        // }
     }
     logGame(time, moves, win){
-        this.props.logGame("memory", time, moves, win);
+        this.props.logGame("memory", time, moves, win, this.props.difficulty);
     }
     componentDidMount(){
         this.startGame()

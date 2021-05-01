@@ -1,12 +1,11 @@
 import axios from 'axios';
 import './App.css';
-import App from './components/App';
-import Memory from './components/memoryGame/Memory';
 import React, {Component} from 'react';
 import Register from './components/Register';
 import Rankings from './components/Rankings';
 import ChooseGame from './components/ChooseGame';
 
+//make separate component for stats
 export default class Login extends Component{
     constructor(props){
         super(props);
@@ -17,9 +16,6 @@ export default class Login extends Component{
             loggedIn: false,
             newPassword: "",
             newUserName: "",
-            solitaire: false,
-            memory: false,
-            memoryDifficulty: "easy",
             stats: "",
             rankings: false,
             chooseGame: false,
@@ -34,13 +30,9 @@ export default class Login extends Component{
         this.edit = this.edit.bind(this);
         this.delete = this.delete.bind(this);
         this.logGame = this.logGame.bind(this)
-        this.startMemory = this.startMemory.bind(this)
     }
-    startMemory(difficulty){
-        this.setState({memoryDifficulty: difficulty, memory: true, chooseGame: false}, ()=>console.log(this.state));
-    }
-    //SELECT Memory game (easy/Med/Hard)
-    logGame(game, time, moves, checkWin){
+    
+    logGame(game, time, moves, checkWin, difficulty){
         if(game === "solitaire"){
         axios.put('/api/profiles/games',{gameWon: checkWin, time: time, moves: moves, userName: 
         this.state.userName, password: this.state.password})
@@ -50,8 +42,9 @@ export default class Login extends Component{
         }).catch(err=>console.log(err))
     }
     if (game === "memory"){
+        console.log(game, time, moves, checkWin)
         axios.put(`/api/profiles/games/memory`, {gameWon: checkWin, time: time, moves: moves, userName:
-        this.state.userName, password: this.state.password, difficulty: this.state.memoryDifficulty})
+        this.state.userName, password: this.state.password, difficulty: difficulty})
         .then(response =>{
             console.log(response);
             this.setState({stats: response.data})
@@ -163,8 +156,7 @@ export default class Login extends Component{
         }
         //check if any game is true;
         //improve this giant if statement..
-        else if (this.state.newUser === false && this.state.loggedIn === true && this.state.memory === false && this.state.solitaire === false && this.state.rankings === false
-            && this.state.chooseGame === false){
+        else if (this.state.newUser === false && this.state.loggedIn === true && this.state.rankings === false && this.state.chooseGame === false){
             let stats;
             if (this.state.stats){
                 let {bestTime, gamesPlayed, gamesWon, leastMoves} = this.state.stats;
@@ -215,7 +207,8 @@ export default class Login extends Component{
                     }
                 }
                 else{winPercentage = ""}
-                stats = (<ul id="stats">
+                stats = (
+                <ul id="stats">
                     <button data-name="stats" onClick={this.closeWindow}>X</button>
                     <li>Best Time : {bestTime}</li>
                     <li>Least Amount of Moves: {leastMoves}</li>
@@ -250,20 +243,14 @@ export default class Login extends Component{
         }
         else if (this.state.loggedIn === true && this.state.chooseGame === true){
            login= ( <ChooseGame returnHome={()=>{this.setState({chooseGame: false})}}
-            solitaire={()=>{this.setState({solitaire: true, chooseGame: false})}}  memory={this.startMemory}/> )
+            logGame={this.logGame}/> )
 
         }
 
         else if (this.state.loggedIn === true && this.state.rankings === true){
             login = (<Rankings user={this.state.userName} home={()=>{this.setState({rankings: false})}}/>)
         }
-        else if (this.state.loggedIn === true && this.state.solitaire === true){
-            console.log('start')
-            login = (<App logGame={this.logGame} returnHome={()=>{this.setState({solitaire: false})}}/>)
-        }
-        else if (this.state.loggedIn === true && this.state.memory === true){
-            login = (<Memory logGame={this.logGame} returnHome={()=>{this.setState({memory: false})}}difficulty={this.state.memoryDifficulty} />)
-        }
+        
         else{login = (<Register login={()=>{this.setState({newUser: false})}}/>)}
         return(
             <div>

@@ -38,7 +38,7 @@ export default class GameDets extends Component{
                 <div id="moves">Moves: {this.props.moves}</div>
                 <div id="time">Time: {displayTime}</div>
                 <button id="newGame" onClick={this.props.newGame}>New Game</button>
-                <button id="returnHome" onClick={this.props.returnHome}>Home</button>
+                <button id="returnHome" onClick={this.props.returnHome}>Exit</button>
                 
             </div>
         )
