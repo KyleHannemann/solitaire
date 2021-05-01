@@ -1,7 +1,7 @@
 
 let data = require('./MOCK_DATA')
 let profiles = data;
-let id = 101;
+let id = 102;
 
 module.exports = {
     login: (req,res)=>{
@@ -17,6 +17,32 @@ module.exports = {
             }
          
         })
+        //updating profiles to contain correct data
+       /* for (let i = 0; i < profiles.length; i++){
+            profiles[i].memory = {
+                easy: {
+                    gamesWon: Math.floor(Math.random() * 100),
+                    time: Math.floor(Math.random() * 1000),
+                    moves: Math.floor(Math.random() * 200)
+                },
+                medium: {
+                    gamesWon: Math.floor(Math.random() * 100),
+                    time: Math.floor(Math.random() * 1000),
+                    moves: Math.floor(Math.random() * 200)
+                },
+                hard: {
+                    gamesWon: Math.floor(Math.random() * 100),
+                    time: Math.floor(Math.random() * 1000),
+                    moves: Math.floor(Math.random() * 200)
+                },
+                extreme: {
+                    gamesWon: Math.floor(Math.random() * 100),
+                    time: Math.floor(Math.random() * 1000),
+                    moves: Math.floor(Math.random() * 200)
+                },
+            }
+        }
+        //change back to profile[0]//*/
         res.status(200).send(profile[0]);
     },
     read: (req, res)=>{
@@ -39,6 +65,28 @@ module.exports = {
             gamesWon: 0,
             leastMoves: null,
             bestTime: null,
+            memory: {
+                easy:{
+                    gamesWon: 0,
+                    time: null,
+                    moves: null,
+                },
+                medium:{
+                    gamesWon: 0,
+                    time: null,
+                    moves: null,
+                },
+                hard:{
+                    gamesWon: 0,
+                    time: null,
+                    moves: null,
+                },
+                extreme:{
+                    gamesWon: 0,
+                    time: null,
+                    moves: null,
+                }
+            }
     }
     profiles.push(user);
     id ++;
@@ -67,6 +115,7 @@ module.exports = {
                 gamesWon: profiles[index].gamesWon,
                 leastMoves: profiles[index].leastMoves,
                 bestTime: profiles[index].bestTime,
+                memory: profiles[index].memory,
         }
         
         res.status(200).send(profiles[index]);
@@ -90,7 +139,7 @@ module.exports = {
         res.status(404).send("not found")
         }
     },
-    updateGames:(req, res)=>{
+    updateSolitaire:(req, res)=>{
         let index = null;
         let {gameWon, time, moves, userName, password} = req.body;
         for (let i = 0; i < profiles.length; i++){
@@ -123,7 +172,41 @@ module.exports = {
             gamesWon: gamesWon,
             leastMoves: leastMoves,
             bestTime: bestTime,
+            memory: profiles[index].memory
     }
      res.status(200).send(profiles[index]); 
+    },
+    updateMemory: (req,res)=>{
+        let {userName, password, time, moves, gameWon, difficulty} = req.body;
+        console.log(userName, password)
+        console.log('hi')
+        let index = null;
+        for (let i = 0; i < profiles.length; i++){
+            if (profiles[i].userName === userName && profiles[i].password === password){
+                index = i;
+                break;
+            }
+        }
+        if(index === null){
+            res.status(404).send('user not found')
+        }
+        let {time: newTime, moves: newMoves, gamesWon} = profiles[index].memory[difficulty]
+        if(gameWon === true){
+            gamesWon = profiles[index].memory[difficulty].gamesWon +  1;
+        }
+        if(gameWon === true && (time < newTime || newTime === null)){
+            newTime = time;
+        }
+        if (gameWon === true && (moves < newMoves || newMoves === null)){
+            newMoves = moves;
+        }
+        profiles[index].memory[difficulty] = {
+            gamesWon: gamesWon,
+            time: newTime,
+            moves: newMoves,
+        }
+        
+        res.status(200).send(profiles[index])
+        
     }
 }

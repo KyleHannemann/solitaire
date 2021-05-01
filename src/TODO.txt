@@ -60,10 +60,28 @@ TODO:
 
 -Title on homepage/login
 
--seperate game options to look better in ChooseGame
+-change check win back after testing api
+
+
 -improve login code (giant if statement)
 
+-add win game on memory
+
+-add server connection for memory
+-put game stats after win or return to home,
+-get stats
+
+-add option in rankings for which game;
+
+-
+
+-get new mockaroo stats and test
+
+-move more code over to Choose Game component
+
 - add sound
+
+-done and tested by sunday night!
 
 
 

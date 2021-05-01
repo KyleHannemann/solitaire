@@ -26,6 +26,18 @@ export default class Memory extends Component{
        this.cardsFaceDown = this.cardsFaceDown.bind(this)
        this.checkMatch = this.checkMatch.bind(this)
        this.checkWin = this.checkWin.bind(this);
+       this.foundMatch = this.foundMatch.bind(this)
+       this.startGame = this.startGame.bind(this)
+       this.logGame = this.logGame.bind(this)
+    }
+    foundMatch(cardsIdArr){
+        for (let i = 0; i < cardsIdArr.length; i++){
+            let card = document.getElementById(cardsIdArr[i]);
+            let children = Array.from(card.childNodes);
+            for (let j = 0; j < children.length; j++){
+                
+            }
+        }
     }
     checkMatch(cardId, cardValue){
         
@@ -35,39 +47,56 @@ export default class Memory extends Component{
         this.setState({moves: this.state.moves + 1});
         if (this.state.chosenCards.length === 0){
             this.setState({chosenCards: [{id: cardId, value: cardValue}]})
+            return;
         }
         else if (this.state.chosenCards.length === 1){
             this.setState({checkingMatch: true})
             setTimeout(()=>{
                 let card1 = this.state.chosenCards[0];
                 if(card1.value === cardValue && card1.id !== cardId){
-                    let cardA = document.getElementById(card1.id)
-                    let cardB = document.getElementById(cardId);
-                    cardA.style.opacity = .2;
-                    cardB.style.opacity = .2;
-                    this.setState({checkingMatch: false, matchesFound: this.state.matchesFound + 1}
+                    this.foundMatch([card1.id, cardId])
+                    this.setState({checkingMatch: false, matchesFound: this.state.matchesFound + 1,
+                    chosenCards: [], gameCards: this.state.gameCards.map(el=>{
+                        if (el.id === card1.id || el.id === cardId){
+                        let tempObj = {
+                            ...el,
+                            found: true,
+                        }
+                        return tempObj;
+                    }
+                        return el;
+                    })}
                         , ()=>this.checkWin())
 
                 //matchFound
                 }
                 else{
+                  
                   this.setState({chosenCards: []})
-                  this.cardsFaceDown()
+                  this.cardsFaceDown([card1.id, cardId])
                   this.setState({checkingMatch: false})
 
                 }
-            }, 1000)
+            }, 1500)
            
         }
             //check to make sure not the same card
     }
     checkWin(){
-        if (this.state.matchesFound === this.state.gameCards.length / 2){
-            //gamewon
-            console.log('win')
-        }
+        console.log('checkwin')
+        this.logGame(this.state.time, this.state.moves, false)
+        //if (this.state.matchesFound === this.state.gameCards.length / 2){
+           // this.logGame(this.state.time, this.state.moves, true);
+            //console.log('win')
+       // }
+    }
+    logGame(time, moves, win){
+        this.props.logGame("memory", time, moves, win);
     }
     componentDidMount(){
+        this.startGame()
+    }
+    startGame(){
         console.log(this.props.difficulty)
         let shuffledArray = this.state.fullDeck;
         //shuffle all cards
@@ -130,19 +159,18 @@ export default class Memory extends Component{
                 ,front: el.default,
                 back: back,
                 id: uuid(),
+                found: false,
             }
             return tempObj;
         })})
 
     }
-    cardsFaceDown(){
-        let allCards = Array.from(document.querySelectorAll('.memoryCard'));
-        for (let i = 0; i < allCards.length; i++){
-            allCards[i].style.transform = "none"
+    cardsFaceDown(cardsIdArr){
+        for (let i = 0; i < cardsIdArr.length; i++){
+            document.getElementById(cardsIdArr[i]).style.transform = "none"
         }
     }
     render(){
-        console.log(this.state)
         let {gameCards} = this.state
         return(
             <div id="memoryGameBoardContainer">
@@ -150,7 +178,7 @@ export default class Memory extends Component{
                 <div id="memoryGameBoard">
                 {gameCards.map((el, index)=>{
                     return(
-                        <MemoryCard flippable={!this.state.checkingMatch} checkMatch={this.checkMatch} width={this.state.cardWidth} height={this.state.cardHeight} value={el.value} key={index} front={el.front} back={el.back} id={el.id}/>
+                        <MemoryCard found={el.found} flippable={!this.state.checkingMatch} checkMatch={this.checkMatch} width={this.state.cardWidth} height={this.state.cardHeight} value={el.value} key={index} front={el.front} back={el.back} id={el.id}/>
                     )
                 })}
               </div>

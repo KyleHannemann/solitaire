@@ -83,7 +83,7 @@ class App extends Component {
     clearInterval(rain);
   }
   logGame(checkWin){
-    this.props.logGame(this.state.time, this.state.moves, checkWin);
+    this.props.logGame("solitaire",this.state.time, this.state.moves, checkWin);
     
   }
   newGame(){

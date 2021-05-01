@@ -15,18 +15,35 @@ export default class MemoryCard extends Component{
        //check to make sure its not the same card
     }
     render(){
-        let {front, back, value, id, width, height} = this.props
-        return(
-            <div className="memoryCardContainer" style={{height: height, width: width}}>
-                <div id={id} onClick={this.flipCard} data-value={value}  className="memoryCard">
-                    <div className="memoryCardFront" style={{backgroundImage: `url(${back})`}}>
+        let card;
+        let {front, back, value, id, width, height, found} = this.props
+        if (found === false){
+            card = (<div className="memoryCardContainer" style={{height: height, width: width}}>
+            <div id={id} onClick={this.flipCard} data-value={value}  className="memoryCard">
+                <div className="memoryCardFront" style={{backgroundImage: `url(${back})`}}>
 
-                    </div>
-                    <div className="memoryCardBack" style={{backgroundImage: `url(${front})`}}>
+                </div>
+                <div className="memoryCardBack" style={{backgroundImage: `url(${front})`}}>
 
-                    </div>
                 </div>
             </div>
+        </div>)
+        }
+        else {
+            card = ( <div className="memoryCardContainer" style={{height: height, width: width}}>
+            <div id={id}  className="memoryCard">
+                <div className="memoryCardFront" style={{backgroundImage: `url(${back})`, opacity: .3}}>
+
+                </div>
+                <div className="memoryCardBack" style={{backgroundImage: `url(${front})`, opacity: .3}}>
+
+                </div>
+            </div>
+        </div>)
+        }
+        return(
+            <div>{card}</div>
+            
             
         )
     }

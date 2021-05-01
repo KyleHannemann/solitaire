@@ -14,7 +14,7 @@ export default class Login extends Component{
             userName: "",
             password: "",
             newUser: false,
-            loggedIn: true,
+            loggedIn: false,
             newPassword: "",
             newUserName: "",
             solitaire: false,
@@ -40,7 +40,8 @@ export default class Login extends Component{
         this.setState({memoryDifficulty: difficulty, memory: true, chooseGame: false}, ()=>console.log(this.state));
     }
     //SELECT Memory game (easy/Med/Hard)
-    logGame(time, moves, checkWin){
+    logGame(game, time, moves, checkWin){
+        if(game === "solitaire"){
         axios.put('/api/profiles/games',{gameWon: checkWin, time: time, moves: moves, userName: 
         this.state.userName, password: this.state.password})
         .then(response=>{
@@ -48,6 +49,15 @@ export default class Login extends Component{
             this.setState({stats: response.data})
         }).catch(err=>console.log(err))
     }
+    if (game === "memory"){
+        axios.put(`/api/profiles/games/memory`, {gameWon: checkWin, time: time, moves: moves, userName:
+        this.state.userName, password: this.state.password, difficulty: this.state.memoryDifficulty})
+        .then(response =>{
+            console.log(response);
+            this.setState({stats: response.data})
+        }).catch(err=>console.log(err))
+    }
+}
     delete(e){
         e.preventDefault();
         let id = this.state.stats.id;
@@ -252,7 +262,7 @@ export default class Login extends Component{
             login = (<App logGame={this.logGame} returnHome={()=>{this.setState({solitaire: false})}}/>)
         }
         else if (this.state.loggedIn === true && this.state.memory === true){
-            login = (<Memory returnHome={()=>{this.setState({memory: false})}}difficulty={this.state.memoryDifficulty} />)
+            login = (<Memory logGame={this.logGame} returnHome={()=>{this.setState({memory: false})}}difficulty={this.state.memoryDifficulty} />)
         }
         else{login = (<Register login={()=>{this.setState({newUser: false})}}/>)}
         return(
