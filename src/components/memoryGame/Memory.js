@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import uuid from 'react-uuid';
 import './memory.css'
 import MemoryCard from './MemoryCard';
+import MemoryGameDets from './MemoryGameDets';
 import back from './RED_BACK.svg';
 const Svgs = require.context('./memoryCards', true, /\.svg$/);
 const paths = Svgs.keys();
@@ -18,9 +19,53 @@ export default class Memory extends Component{
            chosenCards: [],
            time:0,
            moves: 0,
+           checkingMatch: false,
+           matchesFound: 0,
            
        } 
        this.cardsFaceDown = this.cardsFaceDown.bind(this)
+       this.checkMatch = this.checkMatch.bind(this)
+       this.checkWin = this.checkWin.bind(this);
+    }
+    checkMatch(cardId, cardValue){
+        
+        if (this.state.checkingMatch === true){
+            return;
+        }
+        this.setState({moves: this.state.moves + 1});
+        if (this.state.chosenCards.length === 0){
+            this.setState({chosenCards: [{id: cardId, value: cardValue}]})
+        }
+        else if (this.state.chosenCards.length === 1){
+            this.setState({checkingMatch: true})
+            setTimeout(()=>{
+                let card1 = this.state.chosenCards[0];
+                if(card1.value === cardValue && card1.id !== cardId){
+                    let cardA = document.getElementById(card1.id)
+                    let cardB = document.getElementById(cardId);
+                    cardA.style.opacity = .2;
+                    cardB.style.opacity = .2;
+                    this.setState({checkingMatch: false, matchesFound: this.state.matchesFound + 1}
+                        , ()=>this.checkWin())
+
+                //matchFound
+                }
+                else{
+                  this.setState({chosenCards: []})
+                  this.cardsFaceDown()
+                  this.setState({checkingMatch: false})
+
+                }
+            }, 1000)
+           
+        }
+            //check to make sure not the same card
+    }
+    checkWin(){
+        if (this.state.matchesFound === this.state.gameCards.length / 2){
+            //gamewon
+            console.log('win')
+        }
     }
     componentDidMount(){
         console.log(this.props.difficulty)
@@ -101,10 +146,11 @@ export default class Memory extends Component{
         let {gameCards} = this.state
         return(
             <div id="memoryGameBoardContainer">
+                <MemoryGameDets moves={this.state.moves} returnHome={this.props.returnHome}/>
                 <div id="memoryGameBoard">
                 {gameCards.map((el, index)=>{
                     return(
-                        <MemoryCard width={this.state.cardWidth} height={this.state.cardHeight} value={el.value} key={index} front={el.front} back={el.back} id={el.id}/>
+                        <MemoryCard flippable={!this.state.checkingMatch} checkMatch={this.checkMatch} width={this.state.cardWidth} height={this.state.cardHeight} value={el.value} key={index} front={el.front} back={el.back} id={el.id}/>
                     )
                 })}
               </div>

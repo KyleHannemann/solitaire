@@ -23,6 +23,8 @@ changeMemoryDifficulty(e){
 //get props to start memory with correct info
         return(
             <div id="chooseGameContainer">
+        <div id="chooseGameReturnHome"onClick={this.props.returnHome}>Home</div>
+
         <div id="chooseGame">
             <h3>Solitaire</h3>
             <div onClick={this.props.solitaire}>Start Game</div>
@@ -34,7 +36,6 @@ changeMemoryDifficulty(e){
                 <option value="extreme">Extreme</option>
             </select>
             <div onClick={()=>{this.props.memory(this.state.memoryDifficulty)}}>Start Game</div>
-            
         </div>
         </div>
         )

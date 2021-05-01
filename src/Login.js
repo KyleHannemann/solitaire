@@ -239,7 +239,8 @@ export default class Login extends Component{
             )
         }
         else if (this.state.loggedIn === true && this.state.chooseGame === true){
-           login= ( <ChooseGame solitaire={()=>{this.setState({solitaire: true, chooseGame: false})}}  memory={this.startMemory}/> )
+           login= ( <ChooseGame returnHome={()=>{this.setState({chooseGame: false})}}
+            solitaire={()=>{this.setState({solitaire: true, chooseGame: false})}}  memory={this.startMemory}/> )
 
         }
 
@@ -251,7 +252,7 @@ export default class Login extends Component{
             login = (<App logGame={this.logGame} returnHome={()=>{this.setState({solitaire: false})}}/>)
         }
         else if (this.state.loggedIn === true && this.state.memory === true){
-            login = (<Memory difficulty={this.state.memoryDifficulty} />)
+            login = (<Memory returnHome={()=>{this.setState({memory: false})}}difficulty={this.state.memoryDifficulty} />)
         }
         else{login = (<Register login={()=>{this.setState({newUser: false})}}/>)}
         return(

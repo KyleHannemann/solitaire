@@ -60,7 +60,7 @@ TODO:
 
 -Title on homepage/login
 
-
+-seperate game options to look better in ChooseGame
 -improve login code (giant if statement)
 
 - add sound

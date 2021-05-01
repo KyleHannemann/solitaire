@@ -242,7 +242,7 @@ body{
   height: 100vh;
   width: 100vw;
 }
-#login, #register{
+#login, #register, #chooseGameContainer{
   height: 100vh;
   width: 100vw;
   position: absolute;
@@ -254,7 +254,7 @@ body{
   flex-direction: column;
   justify-content:space-evenly;
 }
-#welcome{
+#welcome, #chooseGame{
   border-radius: 5px;
   background-color: #f2f2f2;
   padding: 36px;
@@ -362,6 +362,13 @@ body{
   background-color: green;
   font-weight: 900;
 }
+#chooseGame > select{
+  width: 100%;
+  font-size: 14px;
+}
+#chooseGame > select:hover{
+  cursor: pointer;
+}
 #welcomeContainer{
   height: 100vh;
   width: 100vw;
@@ -369,7 +376,10 @@ body{
   justify-content: center;
   align-items: center;
 }
-#welcome > h3{
+#chooseGame > h3{
+  border-bottom: 3px double black;
+}
+#welcome > h3, #chooseGame > h3{
   letter-spacing: 2px;
   word-spacing: 8px;
   font-size: 28px;
@@ -386,7 +396,7 @@ body{
   0 10px 8px rgba(0,0,0,.2),
   0 10px 10px rgba(0,0,0,.15);
 }
-#welcome > div{
+#welcome > div, #chooseGame > div{
   width: 100%;
   padding: 12px 20px;
   margin: 8px 0;
@@ -408,7 +418,7 @@ body{
   box-sizing: border-box;
   text-align: center;
 }
-#welcome > div:hover{
+#welcome > div:hover, #chooseGame > div:hover{
 
   cursor: pointer;
   background-color: rgb(82, 131, 82)
@@ -672,7 +682,28 @@ body{
 #returnHome{
   margin-left: 10px;
 }
-#statsReturnHome {
+#chooseGameReturnHome{
+  text-align: center;
+  color: #FFF;
+  border: 2px solid #f2f2f2;
+  border-radius: 0px;
+  padding: 8px;
+  position: absolute;
+  top: 5px;
+  left: 15px;
+  width: 150px;
+  height: 20px;
+  display: inline-block;
+  background-color: inherit;
+  font-size: 14px;
+  letter-spacing: 1px;
+  cursor: pointer;
+  box-shadow: inset 0 0 0 0 #f2f2f2;
+  -webkit-transition: ease-out 0.4s;
+  -moz-transition: ease-out 0.4s;
+  transition: ease-out 0.4s;
+}
+#statsReturnHome{
   color: #FFF;
   border: 2px solid #f2f2f2;
   border-radius: 0px;
@@ -692,7 +723,7 @@ body{
   -moz-transition: ease-out 0.4s;
   transition: ease-out 0.4s;
 }
-#undo:hover, #newGame:hover, #returnHome:hover, #statsReturnHome:hover{
+#undo:hover, #newGame:hover, #returnHome:hover, #statsReturnHome:hover, #chooseGameReturnHome:hover{
   box-shadow: inset 400px 0 0 0 #f2f2f2;
   color: black
 }
