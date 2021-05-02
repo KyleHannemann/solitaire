@@ -180,10 +180,38 @@ export default class Rankings extends Component{
             )
             display = (<div>
                 <div id="sortByMemoryGameDifficulty">
-                    <input onChange={(e)=>{this.setState({memoryDifficulty: e.target.value}, ()=>console.log(this.state))}}  type="radio" name="memoryGameDifficultyRankings" value="easy" id="memEasyRankings" /><label htmlFor="memEasyRankings">Easy</label> 
-                    <input onChange={(e)=>{this.setState({memoryDifficulty: e.target.value}, ()=>console.log(this.state))}} type="radio" name="memoryGameDifficultyRankings" value="medium" id="memMedRankings" /><label htmlFor="memMedRankings">Medium</label> 
-                    <input onChange={(e)=>{this.setState({memoryDifficulty: e.target.value}, ()=>console.log(this.state))}} type="radio" name="memoryGameDifficultyRankings" value="hard" id="memHardRankings" /><label htmlFor="memHardRankings">Hard</label> 
-                    <input onChange={(e)=>{this.setState({memoryDifficulty: e.target.value}, ()=>console.log(this.state))}} type="radio" name="memoryGameDifficultyRankings" value="extreme" id="memExRankings" /><label htmlFor="memExRankings">Extreme</label> 
+                    <input onChange={(e)=>{this.setState({memoryDifficulty: e.target.value}); 
+                let buttons = Array.from(document.querySelectorAll("#sortByButtons > button"));
+        for (let i = 0; i < buttons.length; i++){
+            buttons[i].style.backgroundColor = "rgb(233, 97, 97)";
+            buttons[i].style.width = "125px";
+            buttons[i].style.height = "35px";
+        }
+                }}  type="radio" name="memoryGameDifficultyRankings" value="easy" id="memEasyRankings" /><label htmlFor="memEasyRankings">Easy</label> 
+                    <input onChange={(e)=>{this.setState({memoryDifficulty: e.target.value}); 
+                let buttons = Array.from(document.querySelectorAll("#sortByButtons > button"));
+        for (let i = 0; i < buttons.length; i++){
+            buttons[i].style.backgroundColor = "rgb(233, 97, 97)";
+            buttons[i].style.width = "125px";
+            buttons[i].style.height = "35px";
+        }
+                }} type="radio" name="memoryGameDifficultyRankings" value="medium" id="memMedRankings" /><label htmlFor="memMedRankings">Medium</label> 
+                    <input onChange={(e)=>{this.setState({memoryDifficulty: e.target.value}); 
+                let buttons = Array.from(document.querySelectorAll("#sortByButtons > button"));
+        for (let i = 0; i < buttons.length; i++){
+            buttons[i].style.backgroundColor = "rgb(233, 97, 97)";
+            buttons[i].style.width = "125px";
+            buttons[i].style.height = "35px";
+        }
+                }} type="radio" name="memoryGameDifficultyRankings" value="hard" id="memHardRankings" /><label htmlFor="memHardRankings">Hard</label> 
+                    <input onChange={(e)=>{this.setState({memoryDifficulty: e.target.value}); 
+                let buttons = Array.from(document.querySelectorAll("#sortByButtons > button"));
+        for (let i = 0; i < buttons.length; i++){
+            buttons[i].style.backgroundColor = "rgb(233, 97, 97)";
+            buttons[i].style.width = "125px";
+            buttons[i].style.height = "35px";
+        }
+                }} type="radio" name="memoryGameDifficultyRankings" value="extreme" id="memExRankings" /><label htmlFor="memExRankings">Extreme</label> 
                 </div>
                 <div id="sortByButtons"><button data-id="gamesWon" id="memoryGameSortByGames" onClick={this.sort}>Games Won</button>
                 <button data-id="time" id="memoryGameSortByTime"onClick={this.sort}>Best Time</button>

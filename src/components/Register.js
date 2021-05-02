@@ -52,6 +52,7 @@ export default class Register extends Component{
                     <div><span>Choose Password</span><input name="password" onChange={this.update}/></div>
                     <div><span>Enter Email</span><input name="email" onChange={this.update}/></div>
                     <div><button onClick={this.register}>Register</button></div>
+                    <div><button onClick={this.props.returnHome}>Back</button></div>
                 </form>
             </div>
         )

@@ -21,6 +21,7 @@ export default class Memory extends Component{
            moves: 0,
            checkingMatch: false,
            matchesFound: 0,
+           win: false,
            
        } 
        this.cardsFaceDown = this.cardsFaceDown.bind(this)
@@ -29,6 +30,7 @@ export default class Memory extends Component{
        this.foundMatch = this.foundMatch.bind(this)
        this.startGame = this.startGame.bind(this)
        this.logGame = this.logGame.bind(this)
+       this.winGame = this.winGame.bind(this)
     }
     foundMatch(cardsIdArr){
         for (let i = 0; i < cardsIdArr.length; i++){
@@ -83,15 +85,18 @@ export default class Memory extends Component{
             //check to make sure not the same card
     }
     checkWin(){
-        console.log('checkwin')
-        this.logGame(this.state.time, this.state.moves, true)
-        //if (this.state.matchesFound === this.state.gameCards.length / 2){
-           // this.logGame(this.state.time, this.state.moves, true);
-            //console.log('win')
-       // }
+        
+        if (this.state.matchesFound === this.state.gameCards.length / 2){
+            this.logGame(this.state.time, this.state.moves, true);
+        }
+        return;
+    }
+    winGame(){
+        this.setState({win: true})
     }
     logGame(time, moves, win){
         this.props.logGame("memory", time, moves, win, this.props.difficulty);
+        this.winGame()
     }
     componentDidMount(){
         this.startGame()
@@ -167,22 +172,38 @@ export default class Memory extends Component{
     }
     cardsFaceDown(cardsIdArr){
         for (let i = 0; i < cardsIdArr.length; i++){
-            document.getElementById(cardsIdArr[i]).style.transform = "none"
+           document.getElementById(cardsIdArr[i]).style.transform = "none"
         }
     }
     render(){
-        let {gameCards} = this.state
+        let {gameCards} = this.state;
+        let gameBoard;
+        if (this.state.win === false){
+            gameBoard = ( <div id="memoryGameBoardContainer">
+            <MemoryGameDets moves={this.state.moves} returnHome={()=>{
+                this.logGame(this.state.time, this.state.moves, false);
+                this.props.returnHome()}}/>
+            <div id="memoryGameBoard">
+            {gameCards.map((el, index)=>{
+                return(
+                    <MemoryCard found={el.found} flippable={!this.state.checkingMatch} checkMatch={this.checkMatch} width={this.state.cardWidth} height={this.state.cardHeight} value={el.value} key={index} front={el.front} back={el.back} id={el.id}/>
+                )
+            })}
+          </div>
+        </div>)
+        }
+        else{
+            gameBoard = (
+                <div id="memoryGameBoardContainer">
+               
+                    <MemoryGameDets moves={this.state.moves} returnHome={()=>{
+                this.props.returnHome()}}/>
+
+                </div>
+            )
+        }
         return(
-            <div id="memoryGameBoardContainer">
-                <MemoryGameDets moves={this.state.moves} returnHome={this.props.returnHome}/>
-                <div id="memoryGameBoard">
-                {gameCards.map((el, index)=>{
-                    return(
-                        <MemoryCard found={el.found} flippable={!this.state.checkingMatch} checkMatch={this.checkMatch} width={this.state.cardWidth} height={this.state.cardHeight} value={el.value} key={index} front={el.front} back={el.back} id={el.id}/>
-                    )
-                })}
-              </div>
-            </div>
+            <div>{gameBoard}</div>
         )
 
 

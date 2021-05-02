@@ -273,6 +273,19 @@ body{
   flex-direction: column;
   align-items: center;
 }
+#userStatsDisplay > h4{
+  height: 30px;
+  margin-top: 0px;
+  margin-bottom: 8px;
+}
+#userStatsDisplay  >div >label{
+  color: white;
+  margin: 0px 10px 2px 2px;
+ 
+}
+#userStatsDisplay > div{
+  margin-bottom: 10px;
+}
 
 
 #autoComplete{
@@ -438,6 +451,23 @@ body{
   
   
 }
+#sortByMemoryGameDifficulty{
+  width: 100vw;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: row;
+  margin-top: 15px;
+  margin-bottom: 10px;
+
+  
+
+}
+#sortByMemoryGameDifficulty > label{
+  margin-left: 2px;
+  margin-right: 10px;
+  color:white
+}
 #selectGameRankings{
   width: 100vw;
   display: flex;
@@ -492,7 +522,7 @@ body{
   text-align: center;
 }
 #sortByButtons > button {
-  color: black;
+  color: white;
   width: 125px;
   height: 35px;
   padding: 12px 20px;
@@ -711,6 +741,27 @@ body{
   -moz-transition: ease-out 0.4s;
   transition: ease-out 0.4s;
 }
+#userStatsDisplayHomeButton{
+  text-align: center;
+  color: #FFF;
+  border: 2px solid #f2f2f2;
+  border-radius: 0px;
+  padding: 8px;
+  position: absolute;
+  top: 5px;
+  left: 15px;
+  width: 150px;
+  height: 40px;
+  display: inline-block;
+  background-color: inherit;
+  font-size: 14px;
+  letter-spacing: 1px;
+  cursor: pointer;
+  box-shadow: inset 0 0 0 0 #f2f2f2;
+  -webkit-transition: ease-out 0.4s;
+  -moz-transition: ease-out 0.4s;
+  transition: ease-out 0.4s;
+}
 #statsReturnHome{
   color: #FFF;
   border: 2px solid #f2f2f2;
@@ -731,9 +782,15 @@ body{
   -moz-transition: ease-out 0.4s;
   transition: ease-out 0.4s;
 }
-#undo:hover, #newGame:hover, #returnHome:hover, #statsReturnHome:hover, #chooseGameReturnHome:hover{
+#undo:hover, #newGame:hover, #returnHome:hover, #statsReturnHome:hover, #chooseGameReturnHome:hover,  #userStatsDisplayHomeButton:hover{
   box-shadow: inset 400px 0 0 0 #f2f2f2;
   color: black
+}
+#userStatsDisplay > h2{
+  color: white
+}
+#userStatsDisplay > button{
+
 }
 
 

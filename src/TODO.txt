@@ -23,6 +23,9 @@ keep each component more organized that way.
 -get user Id as soon as logged in so I can use it in my req params,
 rather than having to validate username and password every time.
 
+-I should have made a form componenet to use with all my different forms (login, register, view stats etc.
+) thiis could have saved a lot of time in styling.
+
 
 
 
@@ -37,22 +40,6 @@ BUGS:
 
 
 
--for memory rankings, button showing sortby do not reset when difficulty is changed
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 TODO:
 
@@ -60,13 +47,11 @@ TODO:
 
 -Title on homepage/login
 
--change check win back after testing api on memory
 
 
 
 -add win game on memory screen (simple)
 
--memory put game stats after win or return to home,
 
 
 
@@ -75,10 +60,11 @@ TODO:
 
 
 
--add slider to control stas view, clean up userstats css, rankings css
 
-- add sound
 
+
+
+TESTED for 1 hour after complete
 -done and tested by sunday night!
 
 

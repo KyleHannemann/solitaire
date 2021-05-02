@@ -6,7 +6,7 @@ export default class UserStats extends Component{
         super(props);
 
         this.state = {
-            solitaireStats: true,
+            solitaireStats: false,
             memoryStats: false,
         }
 
@@ -15,7 +15,7 @@ export default class UserStats extends Component{
     render(){
         let {stats} = this.props;
         console.log(stats)
-        let statsDisplay;
+        let statsDisplay = <div></div>
         if (this.state.solitaireStats === true){
             let {bestTime, gamesPlayed, gamesWon, leastMoves} = stats;
             if (bestTime === null){
@@ -105,10 +105,15 @@ export default class UserStats extends Component{
         }
         return(
             <div id="userStatsDisplay">
-            <button onClick={this.props.returnHome}>Home</button>
+            <button id="userStatsDisplayHomeButton" onClick={this.props.returnHome}>Home</button>
             <h2>Stats</h2>
-            <div><button onClick={()=>{this.setState({solitaireStats: true, memoryStats: false})}}>Solitaire</button>
-            <button onClick={()=>{this.setState({memoryStats: true, solitaireStats: false})}}>Memory</button></div>
+            <h4 style={{color: "white"}}>Select Game</h4>
+            <div>
+                <input onChange={()=>{this.setState({solitaireStats: true, memoryStats: false})}}
+                type="radio" name="userStatsDisplayGames" value="solitaireStats"/><label htmlFor="solitaireStats">Solitaire</label>
+                <input onChange={()=>{this.setState({memoryStats: true, solitaireStats: false})}}
+                 type="radio" name="userStatsDisplayGames" value="memoryStats"/><label htmlFor="memoryStats">Memory</label>
+            </div>
                 {statsDisplay}</div>
         )
     }

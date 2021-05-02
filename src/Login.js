@@ -196,7 +196,7 @@ export default class Login extends Component{
             login = (<Rankings user={this.state.userName} home={()=>{this.setState({rankings: false})}}/>)
         }
         
-        else{login = (<Register login={()=>{this.setState({newUser: false})}}/>)}
+        else{login = (<Register returnHome={()=>{this.setState({newUser: false})}} login={()=>{this.setState({newUser: false})}}/>)}
         return(
             <div>
                 {login}</div>
