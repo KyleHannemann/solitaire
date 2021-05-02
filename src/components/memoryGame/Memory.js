@@ -8,7 +8,8 @@ const Svgs = require.context('./memoryCards', true, /\.svg$/);
 const paths = Svgs.keys();
 const svg = paths.map(path => Svgs(path));
 
-
+let timer;
+let rotatingCards;
 export default class Memory extends Component{
     constructor(props){
         super(props);
@@ -31,6 +32,7 @@ export default class Memory extends Component{
        this.startGame = this.startGame.bind(this)
        this.logGame = this.logGame.bind(this)
        this.winGame = this.winGame.bind(this)
+       this.startTime = this.startTime.bind(this)
     }
     foundMatch(cardsIdArr){
         for (let i = 0; i < cardsIdArr.length; i++){
@@ -92,17 +94,37 @@ export default class Memory extends Component{
         return;
     }
     winGame(){
-        this.setState({win: true})
+        this.setState({win: true}, ()=>{this.winGameGraphic()
+        })
+        clearInterval(timer);
+    }
+    winGameGraphic(){
+        let cards = document.querySelectorAll('.memoryCard');
+        let speed = 45
+        rotatingCards = setInterval(()=>{
+            for (let i = 0; i < cards.length; i++){
+                    cards[i].style.transform = `rotateY(${speed}deg)`
+                    speed += 3;
+            }
+        }, 100)
+
     }
     logGame(time, moves, win){
         this.props.logGame("memory", time, moves, win, this.props.difficulty);
         this.winGame()
     }
     componentDidMount(){
-        this.startGame()
+       this.startGame()
+       timer = setInterval(this.startTime, 1000)
+    }
+    startTime(){
+        this.setState({time: this.state.time + 1});
+    }
+    componentWillUnmount(){
+        clearInterval(timer)
+        clearInterval(rotatingCards)
     }
     startGame(){
-        console.log(this.props.difficulty)
         let shuffledArray = this.state.fullDeck;
         //shuffle all cards
         for (let i = shuffledArray.length - 1; i > 0; i--){
@@ -180,7 +202,7 @@ export default class Memory extends Component{
         let gameBoard;
         if (this.state.win === false){
             gameBoard = ( <div id="memoryGameBoardContainer">
-            <MemoryGameDets moves={this.state.moves} returnHome={()=>{
+            <MemoryGameDets time={this.state.time}moves={this.state.moves} returnHome={()=>{
                 this.logGame(this.state.time, this.state.moves, false);
                 this.props.returnHome()}}/>
             <div id="memoryGameBoard">
@@ -195,15 +217,24 @@ export default class Memory extends Component{
         else{
             gameBoard = (
                 <div id="memoryGameBoardContainer">
-               
-                    <MemoryGameDets moves={this.state.moves} returnHome={()=>{
+                    
+                    <MemoryGameDets time={this.state.time} moves={this.state.moves} returnHome={()=>{
                 this.props.returnHome()}}/>
-
+                    <h1 style={{color: "white"}}>Well Played!</h1>
+                <div id="memoryGameWinner">
+                    {gameCards.map((el, index)=>{
+                        if (index < 5){
+                            console.log(el)
+                            return (<MemoryCard  width={this.state.cardWidth} height={this.state.cardHeight} value={el.value} key={index} front={el.front} back={el.back} id={el.id}/>)
+                        }
+                    })}
+                </div>
                 </div>
             )
         }
         return(
-            <div>{gameBoard}</div>
+            <div>
+                {gameBoard}</div>
         )
 
 

@@ -85,7 +85,7 @@ export default class UserStats extends Component{
                     <tr>
                         <th>Difficulty</th>
                         <th>Games Won</th>
-                        <th>Best Time</th>
+                        <th>Best Time(seconds)</th>
                         <th>Least Moves</th>
                     </tr>
                 </thead>

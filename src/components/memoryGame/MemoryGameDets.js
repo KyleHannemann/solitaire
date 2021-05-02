@@ -33,7 +33,7 @@ export default class MemoryGameDets extends Component{
         let displayTime = getTime(time);
         return(
             <div id="memoryGameDets">
-            <div>Moves: {this.props.moves}</div>
+            <div>Moves: {moves}</div>
             <div>Time: {displayTime}</div>
             <button id="memoryGameReturnHome" onClick={this.props.returnHome}>Exit</button>
             </div>
