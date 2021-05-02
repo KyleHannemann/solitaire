@@ -4,6 +4,7 @@ import React, {Component} from 'react';
 import Register from './components/Register';
 import Rankings from './components/Rankings';
 import ChooseGame from './components/ChooseGame';
+import UserStats from './components/UserStats';
 
 //make separate component for stats
 export default class Login extends Component{
@@ -19,6 +20,7 @@ export default class Login extends Component{
             stats: "",
             rankings: false,
             chooseGame: false,
+            viewStats: false,
             
             
         }
@@ -122,7 +124,6 @@ export default class Login extends Component{
         
     }
     welcome(stats){
-        console.log(stats)
         this.setState({stats: stats},()=>(this.setState({loggedIn: true})))
        
        
@@ -156,67 +157,9 @@ export default class Login extends Component{
         }
         //check if any game is true;
         //improve this giant if statement..
-        else if (this.state.newUser === false && this.state.loggedIn === true && this.state.rankings === false && this.state.chooseGame === false){
-            let stats;
-            if (this.state.stats){
-                let {bestTime, gamesPlayed, gamesWon, leastMoves} = this.state.stats;
-                if (bestTime === null){
-                    bestTime = ""
-                }
-                else{
-                    function getTime(t){
-                        let seconds = t;
-                        let minutes = 0;
-                        let hours = 0;
-                        while(seconds >= 60){
-                            while (seconds >= 3600){
-                            hours += 1;
-                            seconds -= 3600;
-                            }
-                            minutes += 1;
-                            seconds -= 60;
-                        }
-                        let time;
-                        if (seconds < 10 && minutes < 10){
-                            time = `${hours}:0${minutes}:0${seconds}`
-                        }
-                        else if (seconds < 10){
-                            time = `${hours}:${minutes}:0${seconds}`
-                        }
-                        else if (minutes < 10){
-                            time = `${hours}:0${minutes}:${seconds}`
-                        }
-                        else {time = `${hours}:${minutes}:${seconds}`}
-                        return time;
-                    }
-                    bestTime = getTime(bestTime);
-                }
-                let winPercentage;
-                if (parseInt(gamesPlayed) > 0){
-                    winPercentage = parseInt(gamesWon)/parseInt(gamesPlayed);
-                    if (winPercentage === 0){
-                        winPercentage = "0%"
-                    }
-                   else if (winPercentage === 1){
-                        winPercentage = "100%"
-                    }
-                    else {
-                        winPercentage = winPercentage.toFixed(2)
-                    //  winPercentage = winPercentage.toFixed(2)
-                        winPercentage = winPercentage[2] + winPercentage[3] + "%"
-                    }
-                }
-                else{winPercentage = ""}
-                stats = (
-                <ul id="stats">
-                    <button data-name="stats" onClick={this.closeWindow}>X</button>
-                    <li>Best Time : {bestTime}</li>
-                    <li>Least Amount of Moves: {leastMoves}</li>
-                    <li>Total Games Played: {gamesPlayed}</li>
-                    <li>Games Won: {gamesWon}</li>
-                    <li>Win Percentage: {winPercentage}</li>
-                </ul>)
-            }
+        else if (this.state.newUser === false && this.state.loggedIn === true && this.state.rankings === false && this.state.chooseGame === false
+            && this.state.viewStats === false){
+            
             let edit = (<div id="edit">
             <form>
                 <button data-name="edit" id="editClose" onClick={this.closeWindow}>X</button>
@@ -229,10 +172,9 @@ export default class Login extends Component{
             login = (
                 <div id="welcomeContainer">
                     {edit}
-                    {stats}
                 <div id="welcome">
                     <h3>Welcome {this.state.userName}</h3>
-                    <div data-name="stats" onClick={this.openWindow}>View Stats</div>
+                    <div data-name="stats" onClick={()=>{this.setState({viewStats: true})}}>View Stats</div>
                     <div onClick={()=>{this.setState({rankings: true})}}>View Rankings</div>
                     <div data-name="edit"onClick={this.openWindow}>Edit Profile</div>
                     <div onClick={()=>{this.setState({chooseGame: true})}}>Choose Game</div>
@@ -245,6 +187,9 @@ export default class Login extends Component{
            login= ( <ChooseGame returnHome={()=>{this.setState({chooseGame: false})}}
             logGame={this.logGame}/> )
 
+        }
+        else if (this.state.loggedIn === true && this.state.viewStats === true){
+            login = (<UserStats stats={this.state.stats} returnHome={()=>{this.setState({viewStats: false})}}/>)
         }
 
         else if (this.state.loggedIn === true && this.state.rankings === true){

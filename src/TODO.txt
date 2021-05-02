@@ -37,7 +37,7 @@ BUGS:
 
 
 
-
+-for memory rankings, button showing sortby do not reset when difficulty is changed
 
 
 
@@ -60,24 +60,22 @@ TODO:
 
 -Title on homepage/login
 
--change check win back after testing api
+-change check win back after testing api on memory
 
 
--improve login code (giant if statement)
 
--add win game on memory
+-add win game on memory screen (simple)
 
--add server connection for memory
--put game stats after win or return to home,
--get stats
+-memory put game stats after win or return to home,
 
--add option in rankings for which game;
 
--
 
--get new mockaroo stats and test
 
--move more code over to Choose Game component
+
+
+
+
+-add slider to control stas view, clean up userstats css, rankings css
 
 - add sound
 

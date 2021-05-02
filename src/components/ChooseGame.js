@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import App from './solitaire/App';
-import Memory from './memoryGame/Memory';
+import Memory from '../components/memoryGame/Memory';
 export default class ChooseGame extends Component{
 constructor(props){
     super(props);
