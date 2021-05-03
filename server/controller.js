@@ -178,8 +178,6 @@ module.exports = {
     },
     updateMemory: (req,res)=>{
         let {userName, password, time, moves, gameWon, difficulty} = req.body;
-        console.log(userName, password)
-        console.log('hi')
         let index = null;
         for (let i = 0; i < profiles.length; i++){
             if (profiles[i].userName === userName && profiles[i].password === password){

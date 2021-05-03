@@ -78,8 +78,6 @@ export default class UserStats extends Component{
         }
         else if (this.state.memoryStats === true){
             let memoryStats = this.props.stats.memory;
-            console.log(memoryStats);
-            console.log(Object.keys(memoryStats))
             statsDisplay = (<table id="memoryUserStatsDisplay">
                 <thead>
                     <tr>

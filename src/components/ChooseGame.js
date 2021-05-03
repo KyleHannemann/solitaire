@@ -35,10 +35,12 @@ changeMemoryDifficulty(e){
         else {
             game = ( <div id="chooseGameContainer">
             <div id="chooseGameReturnHome"onClick={this.props.returnHome}>Home</div>
-    
+            
             <div id="chooseGame">
                 <h3>Solitaire</h3>
                 <div onClick={()=>{this.setState({solitaire: true})}}>Start Game</div>
+                </div>
+                <div id="chooseGame1">
                 <h3>Memory</h3>
                 <select onChange={this.changeMemoryDifficulty}>
                     <option value="easy">Easy</option>

@@ -104,8 +104,6 @@ class App extends Component {
     this.logGame(true);
     this.setState({win: true});
     clearInterval(timer)
-    let cards = document.querySelectorAll('.card');
-    console.log(cards)
     setTimeout(function(){
       let rainingCards = document.querySelectorAll('.rainingCard');
       for (let i = 0; i < rainingCards.length; i++){
@@ -115,7 +113,6 @@ class App extends Component {
 
    setTimeout(function(){
       let rainingCards = document.querySelectorAll('.rainingCard');
-      console.log(rainingCards)
       function raindown(){
         for (let i = 0; i < rainingCards.length; i++){
           rainingCards[i].style.transition = "0s"
@@ -174,7 +171,6 @@ class App extends Component {
       history: this.state.history.filter((el, index, arr)=>
       {if(index < arr.length -1){return el}else{return false;}}
       )});
-      console.log("card flip")
       return;
     }
     let {stock, tableau1, tableau2, tableau3, tableau4, tableau5, tableau6, tableau7,
@@ -265,7 +261,6 @@ class App extends Component {
     this.setState({[oldPosition]: this.state[oldPosition].filter((card, index)=>
     {if (index < startIndex){return card;}else{return false;}})});
     let arr = this.state[oldPosition].slice(startIndex);
-    console.log(arr)
     this.setState({[newPosition]: this.state[newPosition].concat(arr)
       .map(card=>{card.position = newPosition;
         for (var i = 0; i < arr.length; i++ ){
@@ -315,7 +310,6 @@ class App extends Component {
           cards += 1;
       }
     }
-    console.log(cards)
     for (let z = 0; z < cards; z++){
       setTimeout(this.autoComplete, z * 150);
     }
@@ -466,7 +460,7 @@ class App extends Component {
     game = (  <div>
       <button id="infoButton"onClick={()=>{let x  = document.getElementById('gameInfo'); x.style.display = "block"}}>💡</button>
       <section id="gameInfo">
-        <button id="closeInfo" onClick={()=>{ let x = document.getElementById('gameInfo'); x.style.display = "none"; console.log(x)}}>X</button>
+        <button id="closeInfo" onClick={()=>{ let x = document.getElementById('gameInfo'); x.style.display = "none";}}>X</button>
         <ul id="quickTips">
           <h3>Quick Tips</h3>
           <li>click and drag cards to move around board</li>

@@ -43,7 +43,9 @@ BUGS:
 
 TODO:
 
-- remove old console.logs
+-put in sound
+
+
 
 -Title on homepage/login
 
@@ -53,7 +55,6 @@ TODO:
 
 TESTED for 1 hour after complete
 -done and tested by sunday night!
-
 
 
 

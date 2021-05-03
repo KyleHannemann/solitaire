@@ -48,12 +48,19 @@ export default class Memory extends Component{
         if (this.state.checkingMatch === true){
             return;
         }
-        this.setState({moves: this.state.moves + 1});
         if (this.state.chosenCards.length === 0){
+            this.setState({moves: this.state.moves + 1});
+
             this.setState({chosenCards: [{id: cardId, value: cardValue}]})
             return;
         }
+    
         else if (this.state.chosenCards.length === 1){
+            if (this.state.chosenCards[0].id === cardId){
+                return;
+            }
+            this.setState({moves: this.state.moves + 1});
+
             this.setState({checkingMatch: true})
             setTimeout(()=>{
                 let card1 = this.state.chosenCards[0];
@@ -77,7 +84,9 @@ export default class Memory extends Component{
                 else{
                   
                   this.setState({chosenCards: []})
+                  //set array to one on same card
                   this.cardsFaceDown([card1.id, cardId])
+                  console.log(card1.id, cardId)
                   this.setState({checkingMatch: false})
 
                 }
@@ -224,9 +233,9 @@ export default class Memory extends Component{
                 <div id="memoryGameWinner">
                     {gameCards.map((el, index)=>{
                         if (index < 5){
-                            console.log(el)
                             return (<MemoryCard  width={this.state.cardWidth} height={this.state.cardHeight} value={el.value} key={index} front={el.front} back={el.back} id={el.id}/>)
                         }
+                        else return null;
                     })}
                 </div>
                 </div>

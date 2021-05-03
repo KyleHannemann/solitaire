@@ -39,16 +39,13 @@ export default class Login extends Component{
         axios.put('/api/profiles/games',{gameWon: checkWin, time: time, moves: moves, userName: 
         this.state.userName, password: this.state.password})
         .then(response=>{
-            console.log(response)
             this.setState({stats: response.data})
         }).catch(err=>console.log(err))
     }
     if (game === "memory"){
-        console.log(game, time, moves, checkWin)
         axios.put(`/api/profiles/games/memory`, {gameWon: checkWin, time: time, moves: moves, userName:
         this.state.userName, password: this.state.password, difficulty: difficulty})
         .then(response =>{
-            console.log(response);
             this.setState({stats: response.data})
         }).catch(err=>console.log(err))
     }
@@ -85,15 +82,14 @@ export default class Login extends Component{
         else{
             newInfo = {userName: userName, password: password, newUserName: newUserName, newPassword: newPassword}
         }
-        axios.put('/api/profiles', newInfo).then(response=>{console.log(response);if (response.data){
+        axios.put('/api/profiles', newInfo).then(response=>{if (response.data){
             alert("update successful");
             let {userName, password} = response.data;
         
             let window = document.getElementById("edit");
            window.style.marginBottom = "2000px";
            window.style.display = "none";
-           this.setState({userName: userName, password: password}, ()=>{
-          console.log(this.state) })
+           this.setState({userName: userName, password: password})
            
             }
             else{
@@ -113,11 +109,9 @@ export default class Login extends Component{
             userName: this.state.userName,
             password: this.state.password
         }
-        console.log(creds)
         axios.post('/api/profiles/login', creds)
         .then(response=>{
             if (response.data){
-                console.log(response)
                this.welcome(response.data)
             }else{alert('invalid username and/or password')}
         }).catch(error=>{console.log(error); alert("error")})
@@ -174,10 +168,10 @@ export default class Login extends Component{
                     {edit}
                 <div id="welcome">
                     <h3>Welcome {this.state.userName}</h3>
-                    <div data-name="stats" onClick={()=>{this.setState({viewStats: true})}}>View Stats</div>
-                    <div onClick={()=>{this.setState({rankings: true})}}>View Rankings</div>
-                    <div data-name="edit"onClick={this.openWindow}>Edit Profile</div>
                     <div onClick={()=>{this.setState({chooseGame: true})}}>Choose Game</div>
+                    <div onClick={()=>{this.setState({rankings: true})}}>View Rankings</div>
+                    <div data-name="stats" onClick={()=>{this.setState({viewStats: true})}}>View Stats</div>
+                    <div data-name="edit"onClick={this.openWindow}>Edit Profile</div>
                     <div onClick={()=>{this.setState({loggedIn: false})}}>Logout</div>
                 </div>
                 </div>
