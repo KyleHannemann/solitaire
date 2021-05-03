@@ -10,6 +10,9 @@ export default class MemoryCard extends Component{
             return;
         }
        let card = e.target.parentNode;
+       if(card.classList.contains('memoryCard') === false){
+           return;
+       }
        card.style.transform = "rotateY(180deg)";
        this.props.checkMatch(card.id, card.dataset.value)
        //check to make sure its not the same card
@@ -18,12 +21,12 @@ export default class MemoryCard extends Component{
         let card;
         let {front, back, value, id, width, height, found} = this.props
         if (found === false){
-            card = (<div className="memoryCardContainer" style={{height: height, width: width}}>
-            <div id={id} onClick={this.flipCard} data-value={value}  className="memoryCard">
-                <div className="memoryCardFront" style={{backgroundImage: `url(${back})`}}>
+            card = (<div onClick={this.flipCard} className="memoryCardContainer" style={{height: height, width: width}}>
+            <div id={id}  data-value={value}  className="memoryCard">
+                <div className="memoryCardFront"  style={{backgroundImage: `url(${back})`}}>
 
                 </div>
-                <div className="memoryCardBack" style={{backgroundImage: `url(${front})`}}>
+                <div className="memoryCardBack"  style={{backgroundImage: `url(${front})`}}>
 
                 </div>
             </div>
