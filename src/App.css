@@ -623,13 +623,19 @@ body{
  cursor: pointer;
 }
 
-@media screen and (max-width: 850px){
+@media only screen and (max-width: 850px){
   #gameDets > div, #gameDets > button{
-    margin-left: 20px;
-    margin-right: 20px;
+    margin-left: 5px;
+    margin-right: 5px;
   }
   
   
+}
+@media screen and (min-width: 850px){
+#gameDets > div, #gameDets > button{
+  margin-left: 20px;
+  margin-right: 20px
+}
 }
 
 
@@ -690,6 +696,17 @@ body{
   font-size: 24px;
   color: white;
   margin-right: 50px;
+  margin-left: 20px;
+}
+#gameDets > select{
+  background-color: inherit;
+  color: white;
+  border: 1px solid white;
+  margin-right: 10px;
+  
+}
+#gameDets > select:hover{
+  cursor: pointer
 }
 #tableau{
   width: 100%;
@@ -712,7 +729,7 @@ body{
   border-radius: 0px;
   padding: 8px;
   margin-left: 60px;
-  margin-right: 80px;
+  margin-right: 50px;
   width: 80px;
   height: 35px;
   display: inline-block;

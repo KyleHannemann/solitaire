@@ -6,6 +6,9 @@ import Foundation from './Foundation';
 import GameDets from './GameDets';
 import Stock from './Stock';
 import Waste from './Waste';
+import shuffle from './shuffle.mp3';
+import cardClickSound from './cardClick.mp3';
+import cardToFoundationSound from './cardToFoundation.mp3';
 
 
 const reqSvgs = require.context('../../cards', true, /\.svg$/)
@@ -63,7 +66,7 @@ class App extends Component {
    this.returnHome = this.returnHome.bind(this);
    this.autoComplete = this.autoComplete.bind(this);
    this.autoCompleteStart = this.autoCompleteStart.bind(this)
-
+  
    this.checkValidDrop = this.checkValidDrop.bind(this);
   }
   returnHome(e){
@@ -145,6 +148,7 @@ class App extends Component {
   }
   startGame(){
     this.shuffle();
+    this.playSounds('solitaireShuffleCardsSound');
     timer = setInterval(this.startTime, 1000)
     
   }
@@ -223,6 +227,7 @@ class App extends Component {
 
   }
   flipCard(id, position){
+    this.playSounds('cardClickSound');
     if (position !== "waste"){
     this.setState({history: this.state.history.concat([{id: id, position : position}])})
     }
@@ -238,6 +243,12 @@ class App extends Component {
 
   }
   update(cardId, oldPosition, newPosition, children){
+    if (newPosition.includes('foundation') === true){
+      this.playSounds('cardToFoundationSound');
+    }
+    else{
+      this.playSounds('cardClickSound');
+    }
     this.setState({moves: this.state.moves + 1})
     let newMove = [this.state];
     this.setState({history: this.state.history.concat(newMove)});
@@ -311,7 +322,7 @@ class App extends Component {
       }
     }
     for (let z = 0; z < cards; z++){
-      setTimeout(this.autoComplete, z * 150);
+      setTimeout(this.autoComplete, z * 75);
     }
   }
   autoComplete(){
@@ -358,6 +369,11 @@ class App extends Component {
         
       }
     }
+  }
+  playSounds(id){
+    let audioEl = document.getElementById(id);
+    audioEl.currentTime = 0;
+    audioEl.play();
   }
     //need a check function;
     //spread that card to its correct foundation
@@ -458,7 +474,8 @@ class App extends Component {
     let game = []
   
     game = (  <div>
-      <button id="infoButton"onClick={()=>{let x  = document.getElementById('gameInfo'); x.style.display = "block"}}>💡</button>
+      <button id="infoButton"onClick={()=>{let x  = document.getElementById('gameInfo'); x.style.display = "block"}}>
+&#10068;</button>
       <section id="gameInfo">
         <button id="closeInfo" onClick={()=>{ let x = document.getElementById('gameInfo'); x.style.display = "none";}}>X</button>
         <ul id="quickTips">
@@ -555,6 +572,15 @@ This text is Copyright © Ducksters.</footer>
     return(
       <div>
       {game}
+      <audio id="solitaireShuffleCardsSound">
+        <source src={shuffle}></source>
+      </audio>
+      <audio id="cardToFoundationSound">
+        <source src={cardToFoundationSound}></source>
+      </audio>
+      <audio id="cardClickSound">
+        <source src={cardClickSound}></source>
+      </audio>
       </div>
     )
   }

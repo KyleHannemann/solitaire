@@ -1,6 +1,8 @@
 import React, {Component} from 'react';
 import uuid from 'react-uuid';
 import './memory.css'
+import matchFoundSound from './matchFound.mp3'
+import winSound from './win.mp3';
 import MemoryCard from './MemoryCard';
 import MemoryGameDets from './MemoryGameDets';
 import back from './RED_BACK.svg';
@@ -66,6 +68,9 @@ export default class Memory extends Component{
                 let card1 = this.state.chosenCards[0];
                 if(card1.value === cardValue && card1.id !== cardId){
                     this.foundMatch([card1.id, cardId])
+                    let matchFoundSound = document.getElementsByClassName('matchFoundSound')[0];
+                    matchFoundSound.currentTime = 0;
+                    matchFoundSound.play();
                     this.setState({checkingMatch: false, matchesFound: this.state.matchesFound + 1,
                     chosenCards: [], gameCards: this.state.gameCards.map(el=>{
                         if (el.id === card1.id || el.id === cardId){
@@ -108,6 +113,8 @@ export default class Memory extends Component{
         clearInterval(timer);
     }
     winGameGraphic(){
+        let audioWin = document.getElementsByClassName('memoryWinSound')[0];
+        audioWin.play();
         let cards = document.querySelectorAll('.memoryCard');
         let speed = 45
         rotatingCards = setInterval(()=>{
@@ -243,7 +250,17 @@ export default class Memory extends Component{
         }
         return(
             <div>
-                {gameBoard}</div>
+            
+                {gameBoard}
+                <audio className="matchFoundSound">
+                    <source src={matchFoundSound}></source>
+                </audio>
+                <audio className="memoryWinSound">
+                    <source src={winSound}></source>
+                </audio>
+
+                
+                </div>
         )
 
 

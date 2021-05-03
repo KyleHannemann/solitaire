@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-
+import cardToFoundationSound from './cardToFoundation.mp3';
 export default class Foundation extends Component{
     constructor(props){
         super(props)
@@ -103,7 +103,11 @@ export default class Foundation extends Component{
            if (!checkValid){
                return;
            }
-            this.props.update(id, position, this.props.id , children)
+            this.props.update(id, position, this.props.id , children);
+            let sound = document.getElementById('cardToFoundationSound');
+            sound.currentTime = 0;
+            sound.play();
+
     
             
             e.dataTransfer.clearData();
@@ -118,7 +122,10 @@ export default class Foundation extends Component{
            > </div>)
         })
         return(
-            <div id={id} data-value={id} onDragOver={(e)=>{e.preventDefault()}} onDrop={this.onDrop} className="foundation">{foundation}</div>
+            <div id={id} data-value={id} onDragOver={(e)=>{e.preventDefault()}} onDrop={this.onDrop} className="foundation">
+                <audio id="cardToFoundationSound">
+                    <source src={cardToFoundationSound}></source>
+                    </audio>{foundation}</div>
         )
     }
 }
