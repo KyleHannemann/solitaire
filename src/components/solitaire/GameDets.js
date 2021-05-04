@@ -32,6 +32,7 @@ export default class GameDets extends Component{
         setTimeout(()=>{
             let music = document.getElementById(choice);
             music.currentTime = 0;
+            music.volume = .2;
             music.play()
             music.loop = true;
         }, 1000)

@@ -167,6 +167,8 @@ class App extends Component {
     if (this.state.history.length < 2){
       return;
     }
+    this.playSounds('solitaireShuffleCardsSound');
+
     this.setState({moves: this.state.moves + 1})
     //check to see if only a card flip
     if (!this.state.history[this.state.history.length - 1].cards){
@@ -571,6 +573,7 @@ This text is Copyright © Ducksters.</footer>
       }
     return(
       <div>
+   
       {game}
       <audio id="solitaireShuffleCardsSound">
         <source src={shuffle}></source>
