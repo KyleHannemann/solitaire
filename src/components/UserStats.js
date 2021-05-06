@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-
+import axios from 'axios';
 
 export default class UserStats extends Component{
     constructor(props){
@@ -8,16 +8,40 @@ export default class UserStats extends Component{
         this.state = {
             solitaireStats: false,
             memoryStats: false,
+            memoryStatsDifficulty: 'easy',
+            solStats: [],
+            memStats: [],
+            loadingStats: true,
+            
         }
 
         
     }
+    componentDidMount(){
+        //GET sol and mem stats axios.get
+        axios.get(`/api/profiles/gamesStats/solitare/${this.props.userId}`).then(response=>{
+            console.log(response)
+            this.setState({solStats: response.data})
+        }).then(()=>
+        axios.get(`/api/profiles/gamesStats/memory/${this.props.userId}`).then(response=>{
+            console.log(response)
+            this.setState({memStats: response.data}, ()=>{
+                this.setState({loadingStats: false}, ()=>{
+                    console.log(this.state)
+                });
+            })
+        })).catch(err=>{console.log(err)})
+        //CHANGE code below to use new data
+    }
     render(){
         let {stats} = this.props;
-        console.log(stats)
+        console.log(this.state)
         let statsDisplay = <div></div>
-        if (this.state.solitaireStats === true){
-            let {bestTime, gamesPlayed, gamesWon, leastMoves} = stats;
+        if (this.state.solitaireStats === true && this.state.loadingStats === false){
+            let bestTime = this.state.solStats.bestTime[0].min;
+            let gamesPlayed = this.state.solStats.totalGames[0].count;
+            let gamesWon = this.state.solStats.wins[0].count;
+            let leastMoves = this.state.solStats.bestMoves[0].min;
             if (bestTime === null){
                 bestTime = ""
             }
@@ -76,30 +100,57 @@ export default class UserStats extends Component{
                 </tbody>
             </table>)
         }
-        else if (this.state.memoryStats === true){
-            let memoryStats = this.props.stats.memory;
-            statsDisplay = (<table id="memoryUserStatsDisplay">
+        else if (this.state.memoryStats === true && this.state.loadingStats === false){
+            let stats = this.state.memStats[this.state.memoryStatsDifficulty];
+            let bestTime;
+            let bestMoves;
+            if (stats.length >= 1){
+            bestTime = stats.sort((a,b)=>{
+                if (a.time > b.time){
+                    return 1;
+
+                }
+                else{return -1}
+            })[0].time;
+
+            bestMoves = stats.sort((a,b)=>{
+                if (a.moves > b.moves){
+                    return 1;
+                }
+                else{return -1};
+            })[0].moves
+        }
+            statsDisplay = (<div>
+                <div id="userStatsDisplaySelect">
+                <select onChange={(e)=>{
+                    this.setState({memoryStatsDifficulty: e.target.value})
+                }}>
+                    <option value="easy">easy</option>
+                    <option value="medium">medium</option>
+                    <option value="hard">hard</option>
+                    <option value="extreme">extreme</option>
+                </select>
+                </div>
+                <table id="memoryUserStatsDisplay">
                 <thead>
                     <tr>
-                        <th>Difficulty</th>
                         <th>Games Won</th>
                         <th>Best Time(seconds)</th>
                         <th>Least Moves</th>
                     </tr>
                 </thead>
                 <tbody>
-                {Object.keys(memoryStats).map((key, index)=>{
+                {stats.map((key, index)=>{
                     return (
                         <tr key={index}>
-                            <td>{key}</td>
-                            <td>{memoryStats[key].gamesWon}</td>
-                            <td>{memoryStats[key].time}</td>
-                            <td>{memoryStats[key].moves}</td>
+                            <td>{stats.length}</td>
+                            <td>{bestTime}</td>
+                            <td>{bestMoves}</td>
                         </tr>
                     )
                 })}
                 </tbody>
-            </table>)
+            </table></div>)
         }
         return(
             <div id="userStatsDisplay">

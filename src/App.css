@@ -295,6 +295,16 @@ body{
   width: 100%;
   justify-content: center;
 }
+#userStatsDisplaySelect{
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 40px;
+}
+#userStatsDisplaySelect > select:hover{
+  cursor: pointer;
+}
 #userStatsDisplay > h4{
   height: 30px;
   margin-top: 0px;
@@ -303,6 +313,10 @@ body{
 #userStatsDisplay  >div >label{
   color: white;
   margin: 0px 10px 2px 2px;
+ 
+}
+#userStatsDisplay  >div >input:hover{
+  cursor:pointer;
  
 }
 #userStatsDisplay > div{

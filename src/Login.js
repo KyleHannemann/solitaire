@@ -17,10 +17,10 @@ export default class Login extends Component{
             loggedIn: false,
             newPassword: "",
             newUserName: "",
-            stats: "",
             rankings: false,
             chooseGame: false,
             viewStats: false,
+            userId: '',
             
             
         }
@@ -36,29 +36,27 @@ export default class Login extends Component{
     
     logGame(game, time, moves, checkWin, difficulty){
         if(game === "solitaire"){
-        axios.put('/api/profiles/games',{gameWon: checkWin, time: time, moves: moves, userName: 
-        this.state.userName, password: this.state.password})
+        axios.put(`/api/profiles/games/${this.state.userId}`,{gameWon: checkWin, time: time, moves: moves, userName: 
+        this.state.userName})
         .then(response=>{
-            this.setState({stats: response.data})
+            console.log(response)
         }).catch(err=>console.log(err))
     }
     if (game === "memory"){
-        axios.put(`/api/profiles/games/memory`, {gameWon: checkWin, time: time, moves: moves, userName:
-        this.state.userName, password: this.state.password, difficulty: difficulty})
+        axios.put(`/api/profiles/games/memory/${this.state.userId}`, {gameWon: checkWin, time: time, moves: moves, userName:
+        this.state.userName, difficulty: difficulty})
         .then(response =>{
-            this.setState({stats: response.data})
+            console.log(response)
         }).catch(err=>console.log(err))
     }
 }
     delete(e){
         e.preventDefault();
-        let id = this.state.stats.id;
+        let id = this.state.userId;
         axios.delete(`/api/profiles/${id}`).then(response=>
             {
-                if (response.status === parseInt(200)){
-                    alert("successfully deleted profile")
-                    this.setState({loggedIn: false})
-                }
+                console.log(response)
+                this.setState({loggedIn: false})
             }).catch(error=>console.log(error))
     }
     edit(e){
@@ -68,28 +66,29 @@ export default class Login extends Component{
 
         let newInfo;
         if (newPassword.length === 0 && newUserName.length === 0){
-            alert("no changes have been made");
+            alert("no changes were made");
             return;
         }
         //could also account for blank space for checking for ascii values
         if (newUserName.length === 0){
-            newInfo = {userName: userName, password: password, newPassword: newPassword};
+            newInfo = {userName: userName, password: newPassword , id: this.state.userId};
         }
         if(newPassword.length === 0){
-            newInfo = {userName: userName, password: password,newUserName: newUserName};
+            newInfo = {userName: newUserName, password: password, id: this.state.userId};
         }
-        
+        //
         else{
-            newInfo = {userName: userName, password: password, newUserName: newUserName, newPassword: newPassword}
+            newInfo = {userName: newUserName, password: newPassword, id: this.state.userId}
         }
         axios.put('/api/profiles', newInfo).then(response=>{if (response.data){
             alert("update successful");
-            let {userName, password} = response.data;
-        
+            
+            
             let window = document.getElementById("edit");
            window.style.marginBottom = "2000px";
            window.style.display = "none";
-           this.setState({userName: userName, password: password})
+           let {userName} = newInfo;
+           this.setState({userName: userName})
            
             }
             else{
@@ -111,14 +110,13 @@ export default class Login extends Component{
         }
         axios.post('/api/profiles/login', creds)
         .then(response=>{
-            if (response.data){
                this.welcome(response.data)
-            }else{alert('invalid username and/or password')}
-        }).catch(error=>{console.log(error); alert("error")})
+               console.log(response.data)
+        }).catch(error=>{console.log(error); alert("invalid username and/or password")})
         
     }
     welcome(stats){
-        this.setState({stats: stats},()=>(this.setState({loggedIn: true})))
+        this.setState({userId: stats.id},()=>(this.setState({loggedIn: true})))
        
        
     }
@@ -183,7 +181,7 @@ export default class Login extends Component{
 
         }
         else if (this.state.loggedIn === true && this.state.viewStats === true){
-            login = (<UserStats stats={this.state.stats} returnHome={()=>{this.setState({viewStats: false})}}/>)
+            login = (<UserStats userId={this.state.userId}stats={this.state.stats} returnHome={()=>{this.setState({viewStats: false})}}/>)
         }
 
         else if (this.state.loggedIn === true && this.state.rankings === true){

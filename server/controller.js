@@ -1,22 +1,34 @@
 
-let data = require('./MOCK_DATA')
-let profiles = data;
-let id = 102;
+
+
+
 
 module.exports = {
-    login: (req,res)=>{
+/*good*/    login: (req,res)=>{
         let {userName, password} = req.body;
-        let profile = profiles.filter(el=>{
-            if (el.userName === userName){
-                if (el.password === password){
-                    return el;
-                }
+        const db = req.app.get('db');
+        db.get_user([userName, password]).then((data,err)=>{
+            if (data.length !== 1){
+                res.status(404).send('invalid username and/or password');
             }
-            else{
-                return false;
+            else {
+                db.get_user_solitaire
+                res.status(200).send(data[0]);
             }
+        }).catch(err=>{
+            console.log(err)
+        });
+        // let profile = profiles.filter(el=>{
+        //     if (el.userName === userName){
+        //         if (el.password === password){
+        //             return el;
+        //         }
+        //     }
+        //     else{
+        //         return false;
+        //     }
          
-        })
+        // })
         //updating profiles to contain correct data
        /* for (let i = 0; i < profiles.length; i++){
             profiles[i].memory = {
@@ -43,168 +55,193 @@ module.exports = {
             }
         }
         //change back to profile[0]//*/
-        res.status(200).send(profile[0]);
+       
     },
-    read: (req, res)=>{
-        res.status(200).send(profiles);
+    readMemory: (req, res)=>{
+        const db = req.app.get('db');
+        db.get_all_users_memory().then((data,err)=>{
+            res.status(200).send(data);
+        }).catch(err=>{
+            res.status(500).send('error')
+        });
+        
     },
-    create: (req, res)=>{
+    readSolitaire: (req, res)=>{
+        const db = req.app.get('db');
+        db.get_all_users_solitiare().then((data,err)=>{
+            res.status(200).send(data);
+        }).catch(err=>{
+            res.status(500).send('error')
+        });
+    },
+/*GOOD */   create: (req, res)=>{
         let {userName, password, email} = req.body;
-        for (let i = 0; i < profiles.length; i++){
-            if (profiles[i].userName === userName){
-                res.status(404).send("userName unavailable")
-                return;
-            }
-        }
-        let user = {
-            id: id,
-            userName: userName,
-            password: password,
-            gamesPlayed: 0,
-            email: email,
-            gamesWon: 0,
-            leastMoves: null,
-            bestTime: null,
-            memory: {
-                easy:{
-                    gamesWon: 0,
-                    time: null,
-                    moves: null,
-                },
-                medium:{
-                    gamesWon: 0,
-                    time: null,
-                    moves: null,
-                },
-                hard:{
-                    gamesWon: 0,
-                    time: null,
-                    moves: null,
-                },
-                extreme:{
-                    gamesWon: 0,
-                    time: null,
-                    moves: null,
+        const db = req.app.get('db');
+
+        db.get_users().then((data, err)=>{
+            console.log(data);
+            for (let i = 0; i < data.length; i++){
+                    if (data[i].username === userName){
+                        res.status(404).send("userName unavailable")
+                        return;
+                    }
                 }
-            }
-    }
-    profiles.push(user);
-    id ++;
-    res.status(200).send(profiles);
+            
+            
+        }).catch(err=>{res.status(500).send})
+        db.new_user([userName, password, email]).then(()=>{
+                res.status(200).send('success');
+        }).catch(()=>{
+            res.status(500).send('error');
+        })
+    //     
+    //     let user = {
+    //         id: id,
+    //         userName: userName,
+    //         password: password,
+    //         gamesPlayed: 0,
+    //         email: email,
+    //         gamesWon: 0,
+    //         leastMoves: null,
+    //         bestTime: null,
+    //         memory: {
+    //             easy:{
+    //                 gamesWon: 0,
+    //                 time: null,
+    //                 moves: null,
+    //             },
+    //             medium:{
+    //                 gamesWon: 0,
+    //                 time: null,
+    //                 moves: null,
+    //             },
+    //             hard:{
+    //                 gamesWon: 0,
+    //                 time: null,
+    //                 moves: null,
+    //             },
+    //             extreme:{
+    //                 gamesWon: 0,
+    //                 time: null,
+    //                 moves: null,
+    //             }
+    //         }
+    // }
+    // profiles.push(user);
+    // id ++;
+    // res.status(200).send(profiles);
 },
 ///MIGHT need to change this becasue i dont know if the actaul profiles array will be updated
-    update: (req,res)=>{
-        let {userName, password, newPassword, newUserName} = req.body;
-        let index = null;
-        for (let i = 0; i < profiles.length; i++){
-            if (profiles[i].userName === userName && profiles[i].password === password){
-                index = i;
-                break;
-            }
-        }
-        if (index === null){
-            res.status(404).send("user not found")
-        }
-        else{
-        profiles[index] = {
-                id: profiles[index].id,
-                userName: newUserName || profiles[index].userName,
-                password: newPassword || profiles[index].password,
-                gamesPlayed: profiles[index].gamesPlayed,
-                email: profiles[index].email,
-                gamesWon: profiles[index].gamesWon,
-                leastMoves: profiles[index].leastMoves,
-                bestTime: profiles[index].bestTime,
-                memory: profiles[index].memory,
-        }
-        
-        res.status(200).send(profiles[index]);
+   /**todo */   update: (req,res)=>{
+       const {userName, password, id} = req.body;
+       const db = req.app.get('db');
 
-        }
+       db.update_user_info([id, userName, password]).then((data,err)=>{
+           res.status(200).send('update complete');
+       }).catch(err=>{
+           res.status(500).send('error')
+       })
     },
-    delete: (req, res)=>{
-        let id = req.params.id;
-        let index = false;
-        for (let i = 0; i < profiles.length; i++){
-            if (profiles[i].id === parseInt(id)){
-                index = i;
-                break;
-            }
-        }
-        if (index !== false){
-        profiles.splice(index, 1);
-        res.status(200).send(profiles)
-        }
-        else{
-        res.status(404).send("not found")
-        }
+      delete: (req, res)=>{
+        const {id} = req.params;
+        const db = req.app.get('db');
+
+        db.delete_profile(id).then(()=>{
+            res.status(200).send('delete complete')
+        }).catch(err=>{
+            console.log(err)
+            res.status(500).send('error')
+        })
     },
-    updateSolitaire:(req, res)=>{
-        let index = null;
-        let {gameWon, time, moves, userName, password} = req.body;
-        for (let i = 0; i < profiles.length; i++){
-            if (profiles[i].userName === userName && profiles[i].password === password){
-                index = i;
-                break;
-            }
-        }
-        if (index === null){
-            res.status(500).send("not found")
-        }
-        let bestTime = profiles[index].bestTime;
-        if ((gameWon === true) && (bestTime === null || time < bestTime)){
-            bestTime = time
-        }
-        let leastMoves = profiles[index].leastMoves;
-        if ((gameWon === true) && (leastMoves === null || moves < leastMoves)){
-            leastMoves = moves;
-        }
-        let gamesWon = profiles[index].gamesWon;
-        if (gameWon === true){
-            gamesWon += 1;
-        }
-        profiles[index] = {
-            id: profiles[index].id,
-            userName: profiles[index].userName,
-            password: profiles[index].password,
-            gamesPlayed: profiles[index].gamesPlayed + 1,
-            email: profiles[index].email,
-            gamesWon: gamesWon,
-            leastMoves: leastMoves,
-            bestTime: bestTime,
-            memory: profiles[index].memory
-    }
-     res.status(200).send(profiles[index]); 
+      updateSolitaire:(req, res)=>{
+       const db = req.app.get('db');
+       const {id} = req.params;
+        const {gameWon, time, moves, userName} = req.body;
+        console.log(gameWon, time, moves, userName, id)
+       db.update_solitaire([userName, id, gameWon, moves, time]).then(()=>{
+           res.status(200).send('update successful');
+       }).catch(err=>{
+           res.status(505).send('update failed');
+       })
     },
     updateMemory: (req,res)=>{
-        let {userName, password, time, moves, gameWon, difficulty} = req.body;
-        let index = null;
-        for (let i = 0; i < profiles.length; i++){
-            if (profiles[i].userName === userName && profiles[i].password === password){
-                index = i;
-                break;
+       console.log('mem')
+    const db = req.app.get('db');
+    const {id} = req.params;
+     const {gameWon, time, moves, userName, difficulty} = req.body;
+
+    db.update_memory([userName, id, gameWon, moves, time, difficulty]).then(()=>{
+        res.status(200).send('update successful');
+    }).catch(err=>{
+        res.status(505).send('update failed');
+    })
+    },
+    getSolitaireStats: (req,res)=>{
+            let {id} = req.params;
+            const db = req.app.get('db');
+            let stats = {
+                bestTime: null,
+                bestMoves: null,
+                totalGames: null,
+                wins: null,
             }
-        }
-        if(index === null){
-            res.status(404).send('user not found')
-        }
-        let {time: newTime, moves: newMoves, gamesWon} = profiles[index].memory[difficulty]
-        if(gameWon === true){
-            gamesWon = profiles[index].memory[difficulty].gamesWon +  1;
-        }
-        if(gameWon === true && (time < newTime || newTime === null)){
-            newTime = time;
-        }
-        if (gameWon === true && (moves < newMoves || newMoves === null)){
-            newMoves = moves;
-        }
-        profiles[index].memory[difficulty] = {
-            gamesWon: gamesWon,
-            time: newTime,
-            moves: newMoves,
-        }
+            db.get_user_solitaire_time(id).then((data,err)=>{
+                stats.bestTime = data;
+               
+            }).then(()=>{
+                db.get_user_solitaire_wins(id).then((data, err)=>{
+                    stats.wins = data;
+                }).then(()=>{
+                    db.get_user_solitaire_moves(id).then((data,err)=>{
+                                stats.bestMoves = data;
+                                 
+                             }).then(()=>{
+                                 db.get_user_solitaire_games(id).then((data,err)=>{
+                                     stats.totalGames = data;
+                                     res.status(200).send(stats);
+                                 })
+                             })
+                })
+            }).catch(err=>{
+                res.status(500).send('error')
+            });
         
-        res.status(200).send(profiles[index])
+            
+            
+    },
+    getMemoryStats: (req,res)=>{
+        let {id} = req.params;
+        let stats = {
+            easy: null,
+            medium: null,
+            hard: null,
+            extreme: null
+        }
+        const db = req.app.get('db');
+
+        db.get_user_memory_byDifficulty([id, 'easy']).then((data,err)=>{
+            stats.easy = data;
+        })
+        .then(()=>{
+            db.get_user_memory_byDifficulty([id, 'medium']).then((data,err)=>{
+                stats.medium = data;
+            }).then(()=>{
+                db.get_user_memory_byDifficulty([id, 'hard']).then((data,err)=>{
+                    stats.hard = data;
+                }).then(()=>{
+                    db.get_user_memory_byDifficulty([id, 'extreme']).then((data,err)=>{
+                        stats.extreme = data;
+                        res.status(200).send(stats)
+                    })
+            
+        })
+            
         
-    }
+            
+        })
+    }).catch(err=>{
+        res.status(500).send('error')
+    })
+}
+
 }

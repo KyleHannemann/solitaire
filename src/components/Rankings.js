@@ -6,10 +6,13 @@ export default class Rankings extends Component{
         super(props);
 
         this.state = {
-            profiles: [],
+            solitaireStats: [],
+            memoryStats: [],
             solitaire: true,
             memory: false,
             memoryDifficulty: "easy",
+            displayMemoryStats: [],
+            displaySolitaireStats: [],
 
             
         }
@@ -17,9 +20,15 @@ export default class Rankings extends Component{
     }
 
     componentDidMount(){
-        axios.get('/api/profiles').then(response=>{
+        axios.get('/api/profiles/solitaire').then(response=>{
             console.log(response);
-            this.setState({profiles: response.data})
+            this.setState({solitaireStats: response.data, displaySolitaireStats: response.data})
+        }).then(()=>{
+            axios.get('api/profiles/memory').then(response=>{
+                this.setState({memoryStats: response.data, displayMemoryStats: response.data}, ()=>{
+                    console.log(this.state)
+                });
+            })
         }).catch(err=>{
             console.log(err);
         })
@@ -44,10 +53,15 @@ export default class Rankings extends Component{
         }
         if(this.state.memory === true){
             let difficultLevel = this.state.memoryDifficulty;
-
-            this.setState({profiles: this.state.profiles.sort((elA,elB)=>{
-                let a = elA.memory[difficultLevel][sortBy];
-                let b = elB.memory[difficultLevel][sortBy];
+            let temp = [...this.state.memoryStats];
+            this.setState({displayMemoryStats: temp.filter(el=>{
+                if(el.difficulty === difficultLevel){
+                        return el;
+                }
+                
+            }).sort((elA,elB)=>{
+                let a = elA[sortBy];
+                let b = elB[sortBy];
                 if (a === null){
                     return 1;
                 }
@@ -66,23 +80,19 @@ export default class Rankings extends Component{
 
         }
         else {
+            let temp = [...this.state.solitaireStats]
         this.setState({
-            profiles: this.state.profiles.sort((a,b,)=>{
-                if (a[sortBy] === b[sortBy]){
-                    return 0;
+            displaySolitaireStats: temp.sort((a,b,)=>{
+                console.log('yo')
+                if (a[sortBy] > b[sortBy]){
+                    return 1;
                 }
-                else if (a[sortBy] === null){
-                    return 1; 
-                }
-                else if (b[sortBy] === null){
+                else{
                     return -1;
                 }
-                else if (order === "asc"){
-                    return a[sortBy] < b[sortBy] ? -1: 1;
-                }
-                else {
-                    return a[sortBy] < b[sortBy] ? 1: -1;
-                }
+                    
+                
+                
                     
             })
         })
@@ -101,29 +111,29 @@ export default class Rankings extends Component{
                 <thead>
                     <tr>
                         <th>Player</th>
-                        <th >Games Won</th>
-                        <th >Best Time(sec)</th>
-                        <th >Least Moves</th>
+                        <th >Time</th>
+                        <th >Moves</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {this.state.profiles.map((el, index)=>{
-                        let {userName, gamesWon, bestTime, leastMoves} = el;
-                        if (userName === user){
+                    {this.state.displaySolitaireStats.map((el, index)=>{
+                        let {username, time, moves} = el;
+                        if (el.gamewon === false){
+                            return null;
+                        }
+                        else if (username === user){
                             return (<tr id="rankUserRow" key={index}>
-                                <td>{userName}</td>
-                                <td>{gamesWon}</td>
-                                <td>{bestTime}</td>
-                                <td>{leastMoves}</td>
+                                <td>{username}</td>
+                                <td>{time}</td>
+                                <td>{moves}</td>
                             </tr>)
                         }
                         else return(
     
                             <tr key={index}>
-                                <td>{userName}</td>
-                                <td>{gamesWon}</td>
-                                <td>{bestTime}</td>
-                                <td>{leastMoves}</td>
+                                <td>{username}</td>
+                                <td>{time}</td>
+                                <td>{moves}</td>
                             </tr>
                         )
                     })}
@@ -132,7 +142,7 @@ export default class Rankings extends Component{
             </div>
             )
             display = (<div>
-                <div id="sortByButtons"><button id="gamesWon" data-id="gamesWon" onClick={this.sort}>Games Won</button>
+                <div id="sortByButtons">
                 <button id="bestTime" data-id="bestTime" onClick={this.sort}>Best Time</button>
                 <button id="leastMoves"  data-id="leastMoves" onClick={this.sort}>Least Moves</button></div>
                 {ranks}
@@ -147,19 +157,21 @@ export default class Rankings extends Component{
                 <thead>
                     <tr>
                         <th>Player</th>
-                        <th >Games Won</th>
-                        <th >Best Time(sec)</th>
-                        <th >Least Moves</th>
+                        <th >Time</th>
+                        <th >Moves</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {this.state.profiles.map((el, index)=>{
-                        let {userName} = el;
-                        let {gamesWon, time, moves} = el.memory[difficulty];
-                        if (userName === user){
+                    {this.state.displayMemoryStats.map((el, index)=>{
+                           let {username, time, moves } = el;
+                        if (el.difficulty !== difficulty){
+                            return;
+                        }
+                     
+                        
+                        else if (username === user){
                             return (<tr id="rankUserRow" key={index}>
-                                <td>{userName}</td>
-                                <td>{gamesWon}</td>
+                                <td>{username}</td>
                                 <td>{time}</td>
                                 <td>{moves}</td>
                             </tr>)
@@ -167,8 +179,7 @@ export default class Rankings extends Component{
                         else return(
     
                             <tr key={index}>
-                                <td>{userName}</td>
-                                <td>{gamesWon}</td>
+                                <td>{username}</td>
                                 <td>{time}</td>
                                 <td>{moves}</td>
                             </tr>
@@ -180,7 +191,9 @@ export default class Rankings extends Component{
             )
             display = (<div>
                 <div id="sortByMemoryGameDifficulty">
-                    <input onChange={(e)=>{this.setState({memoryDifficulty: e.target.value}); 
+                    <input onChange={(e)=>{this.setState({memoryDifficulty: e.target.value
+                ,displayMemoryStats: this.state.memoryStats    
+                }); 
                 let buttons = Array.from(document.querySelectorAll("#sortByButtons > button"));
         for (let i = 0; i < buttons.length; i++){
             buttons[i].style.backgroundColor = "rgb(233, 97, 97)";
@@ -188,7 +201,9 @@ export default class Rankings extends Component{
             buttons[i].style.height = "35px";
         }
                 }}  type="radio" name="memoryGameDifficultyRankings" value="easy" id="memEasyRankings" /><label htmlFor="memEasyRankings">Easy</label> 
-                    <input onChange={(e)=>{this.setState({memoryDifficulty: e.target.value}); 
+                    <input onChange={(e)=>{this.setState({memoryDifficulty: e.target.value
+                ,displayMemoryStats: this.state.memoryStats    
+                }); 
                 let buttons = Array.from(document.querySelectorAll("#sortByButtons > button"));
         for (let i = 0; i < buttons.length; i++){
             buttons[i].style.backgroundColor = "rgb(233, 97, 97)";
@@ -196,7 +211,9 @@ export default class Rankings extends Component{
             buttons[i].style.height = "35px";
         }
                 }} type="radio" name="memoryGameDifficultyRankings" value="medium" id="memMedRankings" /><label htmlFor="memMedRankings">Medium</label> 
-                    <input onChange={(e)=>{this.setState({memoryDifficulty: e.target.value}); 
+                    <input onChange={(e)=>{this.setState({memoryDifficulty: e.target.value
+                ,displayMemoryStats: this.state.memoryStats    
+                }); 
                 let buttons = Array.from(document.querySelectorAll("#sortByButtons > button"));
         for (let i = 0; i < buttons.length; i++){
             buttons[i].style.backgroundColor = "rgb(233, 97, 97)";
@@ -204,7 +221,9 @@ export default class Rankings extends Component{
             buttons[i].style.height = "35px";
         }
                 }} type="radio" name="memoryGameDifficultyRankings" value="hard" id="memHardRankings" /><label htmlFor="memHardRankings">Hard</label> 
-                    <input onChange={(e)=>{this.setState({memoryDifficulty: e.target.value}); 
+                    <input onChange={(e)=>{this.setState({memoryDifficulty: e.target.value
+                ,displayMemoryStats: this.state.memoryStats    
+                }); 
                 let buttons = Array.from(document.querySelectorAll("#sortByButtons > button"));
         for (let i = 0; i < buttons.length; i++){
             buttons[i].style.backgroundColor = "rgb(233, 97, 97)";
@@ -213,7 +232,7 @@ export default class Rankings extends Component{
         }
                 }} type="radio" name="memoryGameDifficultyRankings" value="extreme" id="memExRankings" /><label htmlFor="memExRankings">Extreme</label> 
                 </div>
-                <div id="sortByButtons"><button data-id="gamesWon" id="memoryGameSortByGames" onClick={this.sort}>Games Won</button>
+                <div id="sortByButtons">
                 <button data-id="time" id="memoryGameSortByTime"onClick={this.sort}>Best Time</button>
                 <button data-id="moves" id="memoryGameSortByMoves"onClick={this.sort}>Least Moves</button></div>
                 {ranks}
