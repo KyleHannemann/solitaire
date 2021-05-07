@@ -102,24 +102,22 @@ export default class UserStats extends Component{
         }
         else if (this.state.memoryStats === true && this.state.loadingStats === false){
             let stats = this.state.memStats[this.state.memoryStatsDifficulty];
-            let bestTime;
-            let bestMoves;
+            let bestTime = null;
+            let bestMoves = null;
+            let gamesWon = 0;
             if (stats.length >= 1){
-            bestTime = stats.sort((a,b)=>{
-                if (a.time > b.time){
-                    return 1;
-
+                for (let i = 0; i < stats.length; i++){
+                    if (stats[i].gamewon === true){
+                        gamesWon++;
+                        if(bestTime === null || stats[i].time < bestTime){
+                            bestTime = stats[i].time
+                        }
+                        if(bestMoves === null || stats[i].moves < bestMoves){
+                            bestMoves = stats[i].moves;
+                        }
+                    }
                 }
-                else{return -1}
-            })[0].time;
-
-            bestMoves = stats.sort((a,b)=>{
-                if (a.moves > b.moves){
-                    return 1;
-                }
-                else{return -1};
-            })[0].moves
-        }
+            }
             statsDisplay = (<div>
                 <div id="userStatsDisplaySelect">
                 <select onChange={(e)=>{
@@ -140,15 +138,15 @@ export default class UserStats extends Component{
                     </tr>
                 </thead>
                 <tbody>
-                {stats.map((key, index)=>{
-                    return (
-                        <tr key={index}>
-                            <td>{stats.length}</td>
+                
+                
+                        <tr >
+                            <td>{gamesWon}</td>
                             <td>{bestTime}</td>
                             <td>{bestMoves}</td>
                         </tr>
-                    )
-                })}
+                    
+                
                 </tbody>
             </table></div>)
         }

@@ -84,6 +84,8 @@ export default class Rankings extends Component{
         this.setState({
             displaySolitaireStats: temp.sort((a,b,)=>{
                 console.log('yo')
+                console.log(a[sortBy])
+                console.log(a)
                 if (a[sortBy] > b[sortBy]){
                     return 1;
                 }
@@ -143,8 +145,8 @@ export default class Rankings extends Component{
             )
             display = (<div>
                 <div id="sortByButtons">
-                <button id="bestTime" data-id="bestTime" onClick={this.sort}>Best Time</button>
-                <button id="leastMoves"  data-id="leastMoves" onClick={this.sort}>Least Moves</button></div>
+                <button id="bestTime" data-id="time" onClick={this.sort}>Best Time</button>
+                <button id="leastMoves"  data-id="moves" onClick={this.sort}>Least Moves</button></div>
                 {ranks}
                 </div>
             )
@@ -164,7 +166,7 @@ export default class Rankings extends Component{
                 <tbody>
                     {this.state.displayMemoryStats.map((el, index)=>{
                            let {username, time, moves } = el;
-                        if (el.difficulty !== difficulty){
+                        if (el.difficulty !== difficulty || el.gamewon === false){
                             return;
                         }
                      
