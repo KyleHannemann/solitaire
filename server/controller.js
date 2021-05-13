@@ -12,7 +12,7 @@ module.exports = {
                 res.status(404).send('invalid username and/or password');
             }
             else {
-                db.get_user_solitaire
+                //db.get_user_solitaire
                 res.status(200).send(data[0]);
             }
         }).catch(err=>{
