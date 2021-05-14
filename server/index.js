@@ -1,6 +1,7 @@
 const express = require('express');
 const massive = require('massive');
 require('dotenv').config();
+const path = require('path')
 const app = express();
 const cnt = require('./controller')
 
@@ -25,6 +26,11 @@ app.put('/api/profiles', cnt.update);
 app.delete('/api/profiles/:id', cnt.delete)
 app.put('/api/profiles/games/:id', cnt.updateSolitaire)
 app.put('/api/profiles/games/memory/:id', cnt.updateMemory)
+
+app.use(express.static(__dirname + '/../build'));
+app.get('*', (req,res)=>{
+    res.sendFile(path.join(__dirname, '../build/index.html'))
+})
 
 app.listen(SERVER_PORT, ()=>{
     console.log(`listening on port ${SERVER_PORT}`)

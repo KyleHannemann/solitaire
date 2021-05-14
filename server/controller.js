@@ -1,23 +1,29 @@
-
+const bcrypt = require('bcryptjs');
 
 
 
 
 module.exports = {
-/*good*/    login: (req,res)=>{
+/*good*/    login: async (req,res)=>{
         let {userName, password} = req.body;
         const db = req.app.get('db');
-        db.get_user([userName, password]).then((data,err)=>{
-            if (data.length !== 1){
-                res.status(404).send('invalid username and/or password');
+
+        let user  = await db.get_user(userName);
+        console.log(user)
+        if (user.length !== 1){
+            return res.status(404).send('invalid username and/or password')
+        }
+        else {
+            let hash = bcrypt.compareSync(password, user[0].password);
+            console.log(hash)
+            if (hash === false){
+                return res.status(404).send('invalid username and/or password')
+
             }
-            else {
-                //db.get_user_solitaire
-                res.status(200).send(data[0]);
+            else{
+                return res.status(200).send(user[0]);
             }
-        }).catch(err=>{
-            console.log(err)
-        });
+        }
         // let profile = profiles.filter(el=>{
         //     if (el.userName === userName){
         //         if (el.password === password){
@@ -74,26 +80,43 @@ module.exports = {
             res.status(500).send('error')
         });
     },
-/*GOOD */   create: (req, res)=>{
-        let {userName, password, email} = req.body;
-        const db = req.app.get('db');
+/*GOOD */   create: async (req, res)=>{
+    let {userName, password, email} = req.body;
+     const db = req.app.get('db');
 
-        db.get_users().then((data, err)=>{
-            console.log(data);
-            for (let i = 0; i < data.length; i++){
-                    if (data[i].username === userName){
-                        res.status(404).send("userName unavailable")
-                        return;
-                    }
-                }
+     let user = await db.check_exists(userName);
+     if (user.length >= 1){
+        return res.status(409).send('username unavailable');
+     }
+     else {
+         const salt = bcrypt.genSaltSync(10);
+         const hash = bcrypt.hashSync(password, salt);
+        let created = await db.new_user([userName, hash, email]);
+        console.log(created)
+        return res.status(200).send('success');
+     }
+},
+        // let {userName, password, email} = req.body;
+        // const db = req.app.get('db');
+
+        // db.get_users().then((data, err)=>{
+        //     console.log(data);
+        //     for (let i = 0; i < data.length; i++){
+        //             if (data[i].username === userName){
+        //                 res.status(404).send("userName unavailable")
+        //                 return;
+        //             }
+        //         }
             
             
-        }).catch(err=>{res.status(500).send})
-        db.new_user([userName, password, email]).then(()=>{
-                res.status(200).send('success');
-        }).catch(()=>{
-            res.status(500).send('error');
-        })
+        // }).catch(err=>{res.status(500).send})
+        // db.new_user([userName, password, email]).then(()=>{
+        //         res.status(200).send('success');
+        // }).catch(()=>{
+        //     res.status(500).send('error');
+        // })
+
+
     //     
     //     let user = {
     //         id: id,
@@ -130,7 +153,6 @@ module.exports = {
     // profiles.push(user);
     // id ++;
     // res.status(200).send(profiles);
-},
 ///MIGHT need to change this becasue i dont know if the actaul profiles array will be updated
    /**todo */   update: (req,res)=>{
        const {userName, password, id} = req.body;
