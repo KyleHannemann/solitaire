@@ -234,6 +234,7 @@
 body{
   background-image: url('./cardTable.png');
   background-size:cover;
+  background-color: rgb(25,78,44);
 
 }
 #viewStatsPage{

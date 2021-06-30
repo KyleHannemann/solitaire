@@ -157,8 +157,11 @@ module.exports = {
    /**todo */   update: (req,res)=>{
        const {userName, password, id} = req.body;
        const db = req.app.get('db');
-
-       db.update_user_info([id, userName, password]).then((data,err)=>{
+       
+       const salt = bcrypt.genSaltSync(10);
+       const hash = bcrypt.hashSync(password, salt);
+    
+       db.update_user_info([id, userName, hash]).then((data,err)=>{
            res.status(200).send('update complete');
        }).catch(err=>{
            res.status(500).send('error')
